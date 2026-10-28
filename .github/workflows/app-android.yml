@@ -1,0 +1,70 @@
+name: App Android
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'index.html'
+      - 'app-android/**'
+      - '.github/workflows/app-android.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: La pagina del telefono dentro l'app (copia per quando manca la rete)
+        run: |
+          mkdir -p app-android/app/src/main/assets
+          cp index.html app-android/app/src/main/assets/index.html
+
+      - name: Chiave di firma
+        env:
+          DH_KEYSTORE_B64: ${{ secrets.DH_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$DH_KEYSTORE_B64" ]; then
+            echo "$DH_KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/telecomando.jks"
+            echo "DH_KEYSTORE_FILE=$RUNNER_TEMP/telecomando.jks" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Nessuna chiave nei Secrets: l'app è firmata con una chiave di prova."
+          fi
+
+      - name: Compila
+        env:
+          DH_KEYSTORE_PASSWORD: ${{ secrets.DH_KEYSTORE_PASSWORD }}
+        run: gradle -p app-android assembleRelease --no-daemon
+
+      - name: Prepara il file
+        run: cp app-android/app/build/outputs/apk/release/app-release.apk telecomando-daggerheart.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: telecomando-daggerheart
+          path: telecomando-daggerheart.apk
+
+      - name: Pubblica nelle Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-${{ github.run_number }}
+          name: Telecomando Daggerheart (Android) ${{ github.run_number }}
+          body: |
+            App Android del telecomando. Si installa aprendo il file .apk (la prima volta consenti "Installa app sconosciute").
+            Ultima versione: https://github.com/${{ github.repository }}/releases/latest/download/telecomando-daggerheart.apk
+          files: telecomando-daggerheart.apk
+          make_latest: true
