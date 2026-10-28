@@ -5,137 +5,197 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#120e0b">
 <meta name="robots" content="noindex">
-<title>Telecomando del PG</title>
+<title>Telecomando Daggerheart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { --ebano: #120e0b; --legno: #1d1611; --ottone: #d4af37; --ottone-scuro: #7a5d22; --pergamena: #f2e4c4; --muto: #a8987a; --pf: #e0525a; --stress: #c48a3a; --speranza: #f3c64e; --arm: #8fb3d9; --pg: #d4af37; }
+  :root { --fondo: #110d0a; --carta: #1a1410; --carta2: #221a14; --linea: #33281d; --ottone: #d4af37; --ottone-scuro: #7a5d22; --testo: #f2e7cf; --muto: #a8987a;
+    --pf: #e0525a; --stress: #d0913c; --speranza: #f3c64e; --arm: #8fb3d9; --ok: #5ad17a; --pg: #d4af37; --r: 12px; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; background: var(--ebano); color: var(--pergamena); font: 15px/1.4 Inter, system-ui, sans-serif; overscroll-behavior: none; }
-  body { display: flex; flex-direction: column; padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 12px); user-select: none; -webkit-user-select: none;
-    background: radial-gradient(120% 60% at 50% 100%, color-mix(in srgb, var(--pg) 16%, transparent), transparent 70%), var(--ebano); }
-  header { display: flex; align-items: center; gap: 10px; padding: 14px 0 10px; border-bottom: 1px solid var(--ottone-scuro); }
-  .gemma { width: 14px; height: 14px; transform: rotate(45deg); background: var(--pg); border: 1px solid var(--pergamena); box-shadow: 0 0 10px var(--pg); flex: none; }
-  h1 { font: 800 21px/1.1 Cinzel, Georgia, serif; margin: 0; letter-spacing: .02em; }
-  .classe { color: var(--muto); font-size: 12px; }
-  .stato { margin-left: auto; font-size: 12px; color: var(--muto); text-align: right; white-space: nowrap; }
-  .stato b { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #6b6b6b; margin-right: 5px; vertical-align: 0; }
-  .stato.ok b { background: #5ad17a; box-shadow: 0 0 8px #5ad17a; } .stato.attesa b { background: #e3b341; } .stato.ko b { background: var(--pf); }
-  .scena { font-size: 12px; color: var(--muto); padding: 6px 0 0; min-height: 1.4em; }
-  .tracce { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; padding: 10px 0; }
-  .traccia span { font-size: 12px; color: var(--muto); } .traccia strong { float: right; font-size: 13px; }
-  .tacche { display: flex; gap: 3px; margin-top: 4px; } .tacche i { flex: 1; height: 8px; border-radius: 2px; background: #2c241c; border: 1px solid #3a2f24; }
-  .pf .tacche i.on { background: var(--pf); border-color: var(--pf); } .stress .tacche i.on { background: var(--stress); border-color: var(--stress); }
-  .speranza .tacche i { border-radius: 50%; height: 12px; flex: 0 0 12px; } .speranza .tacche i.on { background: var(--speranza); border-color: var(--speranza); box-shadow: 0 0 6px var(--speranza); }
-  .armatura .tacche i.on { background: var(--arm); border-color: var(--arm); }
-  .condizioni { display: flex; gap: 6px; flex-wrap: wrap; min-height: 0; } .condizioni em { font-style: normal; font-size: 12px; padding: 2px 9px; border-radius: 10px; border: 1px solid var(--pf); color: #ffb3b8; }
-  .abilita { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0 4px; }
-  .abilita button { flex: 1 1 calc(50% - 8px); min-height: 52px; padding: 8px 10px; font: 600 14px/1.2 Inter, sans-serif; color: var(--pergamena); background: linear-gradient(180deg, #2d2117, #17110c); border: 1px solid var(--ottone-scuro); border-radius: 8px; text-align: left; }
-  .abilita button:active { transform: scale(.97); } .abilita button.attivo { border-color: var(--pg); box-shadow: inset 0 0 0 1px var(--pg), 0 0 14px color-mix(in srgb, var(--pg) 45%, transparent); }
-  .abilita button:focus-visible, select:focus-visible { outline: 2px solid var(--ottone); outline-offset: 2px; }
-  .abilita label { flex: 1 1 100%; font-size: 12px; color: var(--muto); } .abilita select { width: 100%; min-height: 48px; margin-top: 4px; font: 600 14px Inter, sans-serif; color: var(--pergamena); background: #1d1611; border: 1px solid var(--ottone-scuro); border-radius: 8px; padding: 0 10px; }
-  .abilita small { display: block; flex: 1 1 100%; color: var(--muto); font-size: 12px; margin-top: -2px; }
-  .traccia .pm { display: flex; gap: 6px; margin-top: 5px; } .traccia .pm button { flex: 1; min-height: 34px; font: 700 16px Inter, sans-serif; color: var(--pergamena); background: #241b13; border: 1px solid var(--ottone-scuro); border-radius: 6px; }
-  .traccia .pm button:active { background: #3a2a18; }
-  .extra { font-size: 12px; color: var(--muto); display: flex; gap: 12px; flex-wrap: wrap; padding: 2px 0 6px; } .extra b { color: var(--pergamena); font-weight: 600; }
-  details.mappa { margin: 8px 0 2px; border: 1px solid var(--ottone-scuro); border-radius: 8px; background: #0e0b08; }
-  details.mappa summary { padding: 8px 10px; font: 600 13px Inter, sans-serif; color: var(--muto); cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-  details.mappa summary::after { content: '▾'; } details.mappa:not([open]) summary::after { content: '▸'; }
-  #mappa { display: block; width: 100%; aspect-ratio: 1; touch-action: manipulation; }
-  .mappa .zoom { display: flex; gap: 6px; padding: 0 8px 8px; } .mappa .zoom button { flex: 1; min-height: 34px; color: var(--pergamena); background: #241b13; border: 1px solid var(--ottone-scuro); border-radius: 6px; font: 600 13px Inter, sans-serif; }
-  .pad { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 230px; touch-action: none; }
-  /* il medaglione: anello d'ottone che si accende del colore del PG */
-  .medaglione { position: relative; width: min(74vw, 300px); aspect-ratio: 1; border-radius: 50%; touch-action: none;
-    background: radial-gradient(circle, #1b140f 0 58%, #2a2016 59% 61%, #15100c 62%), var(--legno);
-    border: 2px solid var(--ottone); box-shadow: 0 0 0 6px #1a130e, 0 0 0 7px var(--ottone-scuro), 0 0 34px color-mix(in srgb, var(--pg) 30%, transparent), inset 0 0 40px #000; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; background: var(--fondo); color: var(--testo); font: 15px/1.45 Inter, system-ui, sans-serif; overscroll-behavior: none; }
+  body { user-select: none; -webkit-user-select: none; }
+  button, select, input, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  h1, h2, h3 { font-family: Cinzel, Georgia, serif; margin: 0; letter-spacing: .01em; }
+  .schermo { min-height: 100%; display: flex; flex-direction: column; }
+  /* ---------- schermate d'ingresso ---------- */
+  .ingresso { padding: max(28px, env(safe-area-inset-top)) 22px 28px; gap: 18px; justify-content: center; max-width: 560px; margin: 0 auto; width: 100%;
+    background: radial-gradient(90% 50% at 50% 0%, color-mix(in srgb, var(--ottone) 12%, transparent), transparent 70%); }
+  .stemma { width: 74px; height: 74px; margin: 0 auto 4px; border-radius: 50%; border: 2px solid var(--ottone); display: grid; place-items: center; background: radial-gradient(circle, #241b13, #120d09); box-shadow: 0 0 0 5px #18120d, 0 0 0 6px var(--ottone-scuro), 0 0 30px color-mix(in srgb, var(--ottone) 30%, transparent); }
+  .stemma i { width: 26px; height: 36px; background: linear-gradient(90deg, var(--speranza) 50%, #2dd4bf 50%); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+  .ingresso h1 { text-align: center; font-size: 25px; } .ingresso p { margin: 0; color: var(--muto); text-align: center; }
+  .grande { min-height: 56px; border-radius: var(--r); border: 0; background: var(--ottone); color: #1a1208; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; }
+  .secondario { min-height: 50px; border-radius: var(--r); border: 1px solid var(--linea); background: var(--carta); color: var(--testo); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+  .link-piccolo { background: none; border: 0; color: var(--muto); text-decoration: underline; font-size: 13px; padding: 8px; }
+  .incolla { display: flex; flex-direction: column; gap: 8px; } .incolla summary { color: var(--muto); text-align: center; cursor: pointer; padding: 6px; list-style: none; }
+  textarea, input[type=text], input[type=number], select { width: 100%; background: #0d0a08; border: 1px solid var(--linea); border-radius: 10px; padding: 11px 12px; color: var(--testo); user-select: text; -webkit-user-select: text; }
+  textarea:focus, input:focus, select:focus { outline: 2px solid var(--ottone-scuro); border-color: var(--ottone-scuro); }
+  .scelte { display: flex; flex-direction: column; gap: 10px; }
+  .scelta { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--r); background: var(--carta); border: 1px solid var(--linea); text-align: left; width: 100%; }
+  .scelta b { display: block; font: 700 17px Cinzel, Georgia, serif; } .scelta small { color: var(--muto); }
+  .scelta .chip { margin-left: auto; flex: none; }
+  .scelta.mio { border-color: var(--c); box-shadow: inset 0 0 0 1px var(--c); }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 99px; font-size: 12px; font-weight: 600; background: #2a2018; color: var(--muto); }
+  .chip.verde { background: #163020; color: #9be7b0; } .chip.rossa { background: #3a1719; color: #ffb3b8; } .chip.oro { background: #3a2c0e; color: #f6d77b; }
+  .gemma { width: 13px; height: 13px; transform: rotate(45deg); background: var(--c, var(--pg)); border: 1px solid var(--testo); box-shadow: 0 0 10px var(--c, var(--pg)); flex: none; }
+  /* ---------- gioco ---------- */
+  #s-gioco { height: 100%; }
+  header { display: flex; align-items: center; gap: 10px; padding: max(10px, env(safe-area-inset-top)) 14px 10px; background: linear-gradient(180deg, #17110d, var(--fondo)); border-bottom: 1px solid var(--linea); flex: none; }
+  header .chi { min-width: 0; flex: 1; } header h1 { font-size: 19px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } header .classe { color: var(--muto); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stato { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muto); white-space: nowrap; } .stato b { width: 9px; height: 9px; border-radius: 50%; background: #6b6b6b; }
+  .stato.ok b { background: var(--ok); box-shadow: 0 0 8px var(--ok); } .stato.attesa b { background: #e3b341; } .stato.ko b { background: var(--pf); }
+  .icona { position: relative; width: 42px; height: 42px; flex: none; border-radius: 12px; background: var(--carta); border: 1px solid var(--linea); font-size: 19px; display: grid; place-items: center; }
+  .icona sup { position: absolute; top: -5px; right: -5px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--pf); color: #fff; font: 700 11px/18px Inter, sans-serif; text-align: center; padding: 0 4px; }
+  .icona sup:empty { display: none; }
+  .avviso { margin: 8px 14px 0; padding: 8px 12px; border-radius: 10px; background: #2c2210; color: #f6d77b; font-size: 13px; display: flex; gap: 8px; align-items: center; flex: none; }
+  main { flex: 1; overflow-y: auto; padding: 10px 14px 14px; -webkit-overflow-scrolling: touch; }
+  .pagina { display: flex; flex-direction: column; gap: 10px; }
+  nav { display: grid; grid-template-columns: repeat(5, 1fr); background: #140f0b; border-top: 1px solid var(--linea); padding: 4px 4px max(6px, env(safe-area-inset-bottom)); flex: none; }
+  nav button { background: none; border: 0; padding: 6px 2px 4px; color: var(--muto); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 600; border-radius: 10px; }
+  nav button span { font-size: 21px; line-height: 1.1; filter: grayscale(.6); opacity: .8; }
+  nav button.attivo { color: var(--testo); background: #201811; } nav button.attivo span { filter: none; opacity: 1; }
+  .riquadro { background: var(--carta); border: 1px solid var(--linea); border-radius: var(--r); padding: 12px; }
+  .titoletto { font: 600 12px Inter, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muto); margin: 2px 2px 0; display: flex; align-items: center; gap: 8px; }
+  .titoletto .poi { margin-left: auto; text-transform: none; letter-spacing: 0; }
+  /* risorse */
+  .risorse { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ris { background: var(--carta); border: 1px solid var(--linea); border-radius: var(--r); padding: 8px 9px 7px; display: flex; flex-direction: column; gap: 5px; }
+  .ris .testa { display: flex; align-items: baseline; justify-content: space-between; font-size: 12px; color: var(--muto); font-weight: 600; } .ris .testa strong { font-size: 18px; color: var(--testo); font-weight: 700; }
+  .ris .testa small { color: var(--muto); font-weight: 500; font-size: 13px; }
+  .tacche { display: flex; gap: 3px; } .tacche i { flex: 1; height: 7px; border-radius: 3px; background: #2b221a; }
+  .ris.pf .tacche i.on { background: var(--pf); } .ris.stress .tacche i.on { background: var(--stress); } .ris.speranza .tacche i.on { background: var(--speranza); } .ris.armatura .tacche i.on { background: var(--arm); }
+  .pm { display: flex; gap: 6px; } .pm button { flex: 1; min-height: 34px; border-radius: 9px; border: 1px solid var(--linea); background: var(--carta2); font-size: 18px; font-weight: 700; }
+  .pm button:active, .secondario:active, .scelta:active { transform: scale(.98); }
+  .condizioni { display: flex; gap: 6px; flex-wrap: wrap; } .condizioni:empty { display: none; }
+  .abilita { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .abilita button { min-height: 44px; padding: 6px 10px; border-radius: var(--r); border: 1px solid var(--linea); background: var(--carta); text-align: left; font-weight: 600; font-size: 14px; }
+  .abilita button.attivo { border-color: var(--pg); box-shadow: inset 0 0 0 1px var(--pg), 0 0 14px color-mix(in srgb, var(--pg) 35%, transparent); }
+  .abilita label { grid-column: 1 / -1; font-size: 12px; color: var(--muto); font-weight: 600; } .abilita select { margin-top: 5px; min-height: 48px; font-weight: 600; }
+  .abilita small { grid-column: 1 / -1; color: var(--muto); font-size: 12px; margin-top: -2px; }
+  /* joystick */
+  .pad { display: flex; align-items: center; justify-content: center; padding: 6px 0 2px; touch-action: none; }
+  .medaglione { position: relative; width: min(66vw, 260px, 34vh); aspect-ratio: 1; border-radius: 50%; touch-action: none;
+    background: radial-gradient(circle, #1b140f 0 58%, #2a2016 59% 61%, #15100c 62%); border: 2px solid var(--ottone);
+    box-shadow: 0 0 0 6px #1a130e, 0 0 0 7px var(--ottone-scuro), 0 0 34px color-mix(in srgb, var(--pg) 28%, transparent), inset 0 0 40px #000; }
   .medaglione::before, .medaglione::after { content: ''; position: absolute; left: 50%; top: 50%; width: 82%; height: 1px; background: linear-gradient(90deg, transparent, var(--ottone-scuro), transparent); transform: translate(-50%, -50%); }
   .medaglione::after { transform: translate(-50%, -50%) rotate(90deg); }
-  .rosa { position: absolute; inset: 0; font: 600 11px Cinzel, serif; color: var(--muto); }
+  .rosa { position: absolute; inset: 0; font: 600 11px Cinzel, serif; color: var(--muto); pointer-events: none; }
   .rosa span { position: absolute; } .rosa .n { top: 7%; left: 50%; transform: translateX(-50%); } .rosa .s { bottom: 7%; left: 50%; transform: translateX(-50%); } .rosa .o { left: 7%; top: 50%; transform: translateY(-50%); } .rosa .e { right: 7%; top: 50%; transform: translateY(-50%); }
   .pomello { position: absolute; left: 50%; top: 50%; width: 34%; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none;
-    background: radial-gradient(circle at 35% 30%, #fff8, transparent 40%), radial-gradient(circle, var(--pg), color-mix(in srgb, var(--pg) 45%, #000)); border: 2px solid var(--pergamena); box-shadow: 0 6px 18px #000, 0 0 22px var(--pg); }
+    background: radial-gradient(circle at 35% 30%, #fff8, transparent 40%), radial-gradient(circle, var(--pg), color-mix(in srgb, var(--pg) 45%, #000)); border: 2px solid var(--testo); box-shadow: 0 6px 18px #000, 0 0 22px var(--pg); }
   .medaglione.premuto { border-color: var(--pg); }
-  .aiuto { text-align: center; color: var(--muto); font-size: 12px; min-height: 1.4em; }
-  .errore { margin: auto 0; text-align: center; padding: 24px; } .errore h1 { margin-bottom: 10px; }
-  details.sezione { margin: 8px 0 2px; border: 1px solid var(--ottone-scuro); border-radius: 8px; background: #0e0b08; }
-  details.sezione summary { padding: 9px 10px; font: 600 13px Inter, sans-serif; color: var(--muto); cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
-  details.sezione summary::after { content: '▾'; } details.sezione:not([open]) summary::after { content: '▸'; }
-  .zaino, .carte { padding: 0 10px 10px; display: flex; flex-direction: column; gap: 7px; }
-  .oro { display: flex; gap: 8px; } .oro div { flex: 1; text-align: center; background: #17110c; border: 1px solid #3a2d1c; border-radius: 7px; padding: 5px 2px; font-size: 12px; color: var(--muto); }
-  .oro b { display: block; font-size: 18px; color: var(--speranza); } .oro .pm { display: flex; gap: 4px; margin-top: 4px; } .oro .pm button, .ogg button, .carta button { min-height: 34px; color: var(--pergamena); background: #241b13; border: 1px solid var(--ottone-scuro); border-radius: 6px; font: 600 13px Inter, sans-serif; }
-  .oro .pm button { flex: 1; }
-  .ogg { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid #241b13; } .ogg .t { flex: 1; min-width: 0; } .ogg .t b { font-weight: 600; } .ogg .t small { display: block; color: var(--muto); font-size: 12px; }
-  .ogg .q { font: 700 15px Inter, sans-serif; color: var(--pergamena); min-width: 34px; text-align: right; } .ogg.finito { opacity: .5; } .ogg button { padding: 0 12px; }
-  .carta { border: 1px solid var(--dc, #7a5d22); border-left-width: 6px; border-radius: 8px; padding: 8px 10px; background: linear-gradient(180deg, color-mix(in srgb, var(--dc) 14%, #15100c), #110d09); }
-  .carta .dom { font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--dc); font-weight: 700; display: flex; justify-content: space-between; }
-  .carta h3 { margin: 3px 0 4px; font: 700 16px Cinzel, Georgia, serif; } .carta p { margin: 0; font-size: 13px; color: #e2d4b4; }
-  .carta .piede { display: flex; align-items: center; gap: 8px; margin-top: 7px; font-size: 12px; color: var(--muto); } .carta .piede span { flex: 1; } .carta button { padding: 0 14px; }
-  .carta.spesa { opacity: .55; } .carta.spesa button { border-color: var(--pg); }
-  .volta summary { font-size: 12px; color: var(--muto); padding: 4px 0; cursor: pointer; } .volta .carta { margin-top: 6px; }
-  .posta-btn { position: relative; margin-left: 8px; min-width: 42px; min-height: 38px; font-size: 18px; color: var(--pergamena); background: #241b13; border: 1px solid var(--ottone-scuro); border-radius: 8px; }
-  .posta-btn sup { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; border-radius: 9px; background: var(--pf); color: #fff; font: 700 11px/18px Inter, sans-serif; }
-  .posta-btn sup:empty { display: none; }
-  #posta { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.78); display: none; align-items: center; justify-content: center; padding: 18px; }
-  #posta .lettera { width: min(520px, 100%); max-height: 88vh; overflow: auto; background: radial-gradient(120% 80% at 50% 0%, #2c2218, #15100c); border: 2px solid var(--ottone); border-radius: 12px; padding: 16px; box-shadow: 0 0 40px color-mix(in srgb, var(--pg) 40%, transparent); }
-  #posta h2 { margin: 0 0 8px; font: 800 18px Cinzel, Georgia, serif; color: var(--ottone); } #posta .testo { white-space: pre-wrap; font-size: 16px; line-height: 1.5; }
-  #posta img { display: block; width: 100%; border-radius: 8px; margin-top: 10px; border: 1px solid var(--ottone-scuro); }
-  #posta .quando { font-size: 11px; color: var(--muto); margin-top: 8px; } #posta .vecchi { margin-top: 12px; border-top: 1px solid var(--ottone-scuro); padding-top: 8px; font-size: 13px; color: #d8ccb0; }
-  #posta .vecchi div { padding: 4px 0; border-bottom: 1px dashed #3a2d1c; } #posta button.chiudi { margin-top: 12px; width: 100%; min-height: 46px; font: 700 15px Inter, sans-serif; color: var(--ebano); background: var(--ottone); border: 0; border-radius: 8px; }
-  [hidden] { display: none !important; }
-  .banner-app { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 8px 0 0; padding: 8px 10px; border: 1px solid var(--ottone-scuro); border-radius: 8px; background: #1a130e; font-size: 13px; }
-  .banner-app span { flex: 1 1 140px; color: var(--muto); } .banner-app a, .banner-app button { min-height: 36px; padding: 0 12px; display: inline-flex; align-items: center; color: var(--pergamena); background: #2d2117; border: 1px solid var(--ottone-scuro); border-radius: 6px; font: 600 13px Inter, sans-serif; text-decoration: none; }
-  .banner-app button.chiudi-banner { background: none; border: 0; color: var(--muto); padding: 0 6px; }
-  #menu-app { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.7); display: none; align-items: flex-end; justify-content: center; }
-  #menu-app .foglio { width: min(520px, 100%); background: #15100c; border-top: 2px solid var(--ottone); border-radius: 14px 14px 0 0; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; }
-  #menu-app button { min-height: 50px; text-align: left; padding: 0 14px; color: var(--pergamena); background: #241b13; border: 1px solid var(--ottone-scuro); border-radius: 8px; font: 600 15px Inter, sans-serif; }
-  #menu-app small { color: var(--muto); font-size: 12px; }
-  .collega { margin: auto 0; padding: 18px 4px; display: flex; flex-direction: column; gap: 12px; }
-  .collega h1 { font-size: 24px; } .collega p { margin: 0; color: var(--muto); font-size: 14px; }
-  .collega textarea { width: 100%; min-height: 110px; padding: 10px; background: #0e0b08; color: var(--pergamena); border: 1px solid var(--ottone-scuro); border-radius: 8px; font: 14px Inter, sans-serif; user-select: text; -webkit-user-select: text; }
-  .collega button { min-height: 52px; font: 700 16px Inter, sans-serif; color: var(--ebano); background: var(--ottone); border: 0; border-radius: 8px; }
-  .collega ol { margin: 0; padding-left: 20px; color: var(--muto); font-size: 14px; } .collega li { margin: 4px 0; }
-  @media (orientation: landscape) and (max-height: 560px) {
-    body { flex-direction: row; flex-wrap: wrap; align-content: flex-start; gap: 0 18px; }
-    header { flex: 1 1 100%; padding: 8px 0 6px; order: -2; } .scena, .aiuto { display: none; }
-    .colonna { flex: 1 1 0; min-width: 0; overflow-y: auto; max-height: calc(100vh - 60px); }
-    .pad { flex: 0 0 auto; width: min(46vw, 330px); min-height: 0; order: -1; }
-    .medaglione { width: min(40vw, calc(100vh - 90px)); }
+  .aiuto { text-align: center; color: var(--muto); font-size: 12px; }
+  /* scheda */
+  .valori { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .valore { background: var(--carta2); border-radius: 10px; padding: 9px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .valore span { font-size: 12px; color: var(--muto); font-weight: 600; } .valore strong { font-size: 20px; }
+  .valore .passo { display: flex; align-items: center; gap: 6px; } .valore .passo button { width: 38px; height: 36px; border-radius: 9px; border: 1px solid var(--linea); background: var(--carta); font-size: 18px; font-weight: 700; flex: none; }
+  .valore .passo strong { flex: 1; text-align: center; } .valore.cambiato strong { color: var(--speranza); }
+  .riga-azioni { display: flex; gap: 8px; } .riga-azioni > * { flex: 1; }
+  .testo-lungo { color: #e2d6bb; font-size: 14px; white-space: pre-wrap; user-select: text; -webkit-user-select: text; }
+  /* carte */
+  .carta { position: relative; background: linear-gradient(180deg, color-mix(in srgb, var(--dc) 12%, #1a140f), #15100c); border: 1px solid color-mix(in srgb, var(--dc) 40%, var(--linea)); border-left: 5px solid var(--dc); border-radius: var(--r); padding: 10px 12px; }
+  .carta .dom { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--dc); }
+  .carta h3 { font-size: 16px; margin: 3px 0 4px; } .carta p { margin: 0; font-size: 13.5px; color: #e2d6bb; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .carta.aperta p { -webkit-line-clamp: unset; display: block; }
+  .carta .piede { display: flex; align-items: center; gap: 6px; margin-top: 8px; flex-wrap: wrap; } .carta .piede .uso { font-size: 12px; color: var(--muto); margin-right: auto; }
+  .carta .piede button, .ogg button { min-height: 34px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--linea); background: var(--carta2); font-weight: 600; font-size: 13px; }
+  .carta.spesa { opacity: .55; } .carta.spesa .piede button.usa { border-color: var(--pg); }
+  .vuoto { color: var(--muto); font-size: 14px; text-align: center; padding: 14px 6px; border: 1px dashed var(--linea); border-radius: var(--r); }
+  /* zaino */
+  .oro { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; } .oro .valore { align-items: center; text-align: center; } .oro .valore strong { color: var(--speranza); }
+  .oro .valore .passo button { width: 30px; }
+  .ogg { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--carta); border: 1px solid var(--linea); border-radius: var(--r); }
+  .ogg .t { flex: 1; min-width: 0; } .ogg .t b { font-weight: 600; } .ogg .t small { display: block; color: var(--muto); font-size: 12.5px; } .ogg .q { font-weight: 700; font-size: 16px; min-width: 30px; text-align: right; }
+  .ogg.finito { opacity: .5; }
+  /* mappa */
+  #mappa { display: block; width: 100%; aspect-ratio: 1; border-radius: var(--r); background: #0b0907; touch-action: manipulation; }
+  /* fogli dal basso: menu, editor, messaggi */
+  .velo { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.72); display: flex; align-items: flex-end; justify-content: center; }
+  .foglio { width: min(560px, 100%); max-height: 92vh; overflow-y: auto; background: #16110d; border-top: 2px solid var(--ottone); border-radius: 18px 18px 0 0; padding: 16px 16px max(16px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
+  .foglio h2 { font-size: 19px; color: var(--ottone); } .foglio label { font-size: 12px; color: var(--muto); font-weight: 600; display: flex; flex-direction: column; gap: 5px; }
+  .foglio .due { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .foglio .spunta { flex-direction: row; align-items: center; gap: 10px; font-size: 14px; color: var(--testo); font-weight: 500; } .foglio .spunta input { width: 22px; height: 22px; }
+  .foglio .voce { min-height: 52px; text-align: left; padding: 0 14px; border-radius: var(--r); border: 1px solid var(--linea); background: var(--carta); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .foglio .voce small { color: var(--muto); font-weight: 500; margin-left: auto; }
+  .lettera .testo { white-space: pre-wrap; font-size: 16px; line-height: 1.5; user-select: text; -webkit-user-select: text; }
+  .lettera img { display: block; width: 100%; border-radius: 10px; border: 1px solid var(--ottone-scuro); }
+  .lettera .quando { font-size: 11px; color: var(--muto); } .lettera .vecchi { border-top: 1px solid var(--linea); padding-top: 8px; font-size: 13px; color: #d8ccb0; display: flex; flex-direction: column; gap: 6px; }
+  .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #2a2016; border: 1px solid var(--ottone-scuro); color: var(--testo); padding: 9px 14px; border-radius: 99px; font-size: 13px; z-index: 70; max-width: 90vw; text-align: center; box-shadow: 0 8px 24px #000; }
+  @media (orientation: landscape) and (max-height: 520px) {
+    #pag-gioco { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; } #pag-gioco .pad { grid-row: 1 / span 4; grid-column: 2; position: sticky; top: 0; } .medaglione { width: min(42vw, calc(100vh - 150px)); }
   }
-  @media (prefers-reduced-motion: reduce) { .abilita button:active { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .pm button:active, .secondario:active, .scelta:active { transform: none; } }
 </style>
 </head>
 <body>
-<header>
-  <div class="gemma" aria-hidden="true"></div>
-  <div><h1 id="nome">Telecomando</h1><div class="classe" id="classe">collegamento in corso…</div></div>
-  <div class="stato attesa" id="stato" role="status"><b></b><span id="stato-t">Collegamento…</span></div>
-  <button type="button" class="posta-btn" id="posta-btn" hidden aria-label="Messaggi del GM">✉️<sup id="posta-n"></sup></button>
-  <button type="button" class="posta-btn" id="app-btn" hidden aria-label="Impostazioni dell'app">⚙️</button>
-</header>
-<div class="banner-app" id="banner-app" hidden><span>📲 C’è l’app Android del telecomando: resta collegata anche con il telefono in tasca.</span><a id="app-apri" href="#">Apri nell’app</a><a id="app-scarica" href="#" target="_blank" rel="noopener">Scarica l’app</a><button type="button" class="chiudi-banner" id="app-chiudi" aria-label="Chiudi">✕</button></div>
-<div id="menu-app" role="dialog" aria-modal="true" aria-label="Impostazioni dell'app"><div class="foglio">
-  <button type="button" id="menu-batteria">🔋 Resta collegato in tasca <small id="menu-batteria-stato"></small></button>
-  <button type="button" id="menu-cambia">🔄 Cambia personaggio (nuovo link)</button>
-  <button type="button" id="menu-chiudi">Chiudi</button>
-  <small id="menu-versione"></small>
-</div></div>
-<div class="colonna">
-  <div class="scena" id="scena"></div>
-  <div class="aiuto" id="aiuto">Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.</div>
-  <div class="tracce" id="tracce"></div>
-  <div class="condizioni" id="condizioni"></div>
-  <div class="extra" id="extra"></div>
-  <div class="abilita" id="abilita"></div>
-  <details class="sezione" id="zaino-box"><summary>🎒 Zaino</summary><div class="zaino" id="zaino"></div></details>
-  <details class="sezione" id="carte-box"><summary>🃏 Carte dominio</summary><div class="carte" id="carte"></div></details>
-  <details class="mappa" id="mappa-box"><summary>🗺️ Mappa del tavolo</summary><canvas id="mappa" width="600" height="600" aria-label="Mini-mappa: tu, gli altri PG e i PNG visibili"></canvas>
-    <div class="zoom"><button type="button" id="zoom-meno">− Allarga</button><button type="button" id="zoom-piu">+ Avvicina</button></div></details>
-</div>
-<div class="pad" id="pad"><div class="medaglione" id="medaglione" role="application" aria-label="Joystick: trascina per muovere il personaggio">
-  <div class="rosa" aria-hidden="true"><span class="n">avanti</span><span class="s">indietro</span><span class="o">sinistra</span><span class="e">destra</span></div>
-  <div class="pomello" id="pomello"></div>
-</div></div>
-<div id="posta" role="dialog" aria-modal="true" aria-label="Messaggio del GM"><div class="lettera"><h2>✉️ Dal GM</h2><div id="posta-corpo"></div><button type="button" class="chiudi" id="posta-chiudi">Ho letto</button></div></div>
+<!-- browser (non l'app): invito a usare l'app Android -->
+<section class="schermo ingresso" id="s-benvenuto" hidden>
+  <div class="stemma"><i></i></div>
+  <h1>Telecomando Daggerheart</h1>
+  <p id="benv-testo">Il telecomando del tuo personaggio è un’app per Android.</p>
+  <a class="grande" id="benv-apri" href="#" hidden>📲 Apri nell’app</a>
+  <a class="secondario" id="benv-scarica" href="#" target="_blank" rel="noopener" hidden>⬇️ Scarica l’app Android</a>
+  <button type="button" class="link-piccolo" id="benv-browser" hidden>Continua nel browser</button>
+</section>
+<!-- app: collegarsi al tavolo -->
+<section class="schermo ingresso" id="s-collega" hidden>
+  <div class="stemma"><i></i></div>
+  <h1>Collegati al tavolo</h1>
+  <p>Inquadra il QR del tavolo che mostra il GM: è lo stesso per tutti i giocatori.</p>
+  <button type="button" class="grande" id="collega-scansiona">📷 Inquadra il QR del tavolo</button>
+  <details class="incolla"><summary>oppure incolla il link del tavolo</summary>
+    <textarea id="collega-link" rows="3" placeholder="https://…#t=…&amp;k=…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+    <button type="button" class="secondario" id="collega-usa">Collega</button></details>
+</section>
+<!-- scelta del personaggio -->
+<section class="schermo ingresso" id="s-scelta" hidden>
+  <div class="stemma"><i></i></div>
+  <h1>Chi giochi?</h1>
+  <p id="scelta-stato">Collegamento al tavolo…</p>
+  <div class="scelte" id="scelte"></div>
+  <button type="button" class="link-piccolo" id="scelta-tavolo" hidden>Cambia tavolo</button>
+</section>
+<!-- gioco -->
+<section class="schermo" id="s-gioco" hidden>
+  <header>
+    <div class="gemma" id="h-gemma"></div>
+    <div class="chi"><h1 id="nome">Personaggio</h1><div class="classe"><span class="stato attesa" id="stato"><b></b><span id="stato-t">Collegamento…</span></span> · <span id="classe"></span></div></div>
+    <button type="button" class="icona" id="posta-btn" hidden aria-label="Messaggi del GM">✉️<sup id="posta-n"></sup></button>
+    <button type="button" class="icona" id="menu-btn" aria-label="Menu">☰</button>
+  </header>
+  <div class="avviso" id="coda" hidden>⏳ <span id="coda-t"></span></div>
+  <main id="contenuto">
+    <div class="pagina" id="pag-gioco">
+      <div class="risorse" id="risorse"></div>
+      <div class="condizioni" id="condizioni"></div>
+      <div class="abilita" id="abilita"></div>
+      <div class="pad" id="pad"><div class="medaglione" id="medaglione" role="application" aria-label="Joystick: trascina per muovere il personaggio">
+        <div class="rosa" aria-hidden="true"><span class="n">avanti</span><span class="s">indietro</span><span class="o">sinistra</span><span class="e">destra</span></div>
+        <div class="pomello" id="pomello"></div></div></div>
+      <div class="aiuto">Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.</div>
+    </div>
+    <div class="pagina" id="pag-scheda" hidden></div>
+    <div class="pagina" id="pag-carte" hidden></div>
+    <div class="pagina" id="pag-zaino" hidden></div>
+    <div class="pagina" id="pag-mappa" hidden>
+      <div class="titoletto">Mappa del tavolo <span class="poi" id="mappa-scena"></span></div>
+      <canvas id="mappa" width="640" height="640" aria-label="Mini-mappa: tu, gli altri PG e i PNG visibili"></canvas>
+      <div class="riga-azioni"><button type="button" class="secondario" id="zoom-meno">− Allarga</button><button type="button" class="secondario" id="zoom-piu">+ Avvicina</button></div>
+    </div>
+  </main>
+  <nav id="schede">
+    <button type="button" data-pag="gioco" class="attivo"><span>🕹️</span>Gioco</button>
+    <button type="button" data-pag="scheda"><span>📜</span>Scheda</button>
+    <button type="button" data-pag="carte"><span>🃏</span>Carte</button>
+    <button type="button" data-pag="zaino"><span>🎒</span>Zaino</button>
+    <button type="button" data-pag="mappa"><span>🗺️</span>Mappa</button>
+  </nav>
+</section>
+<section class="schermo ingresso" id="s-errore" hidden><h1>Qualcosa non va</h1><p id="errore-t"></p></section>
+<div class="velo" id="velo" hidden><div class="foglio" id="foglio" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden></div>
 <script>
     const MqttMini = (() => {
       const enc = new TextEncoder(), dec = new TextDecoder();
@@ -221,131 +281,364 @@
       const s = new Uint8Array(await crypto.subtle.sign('HMAC', k, new TextEncoder().encode(testo)));
       return Array.from(s.slice(0, 16), x => x.toString(16).padStart(2, '0')).join('');
     }
-    // Messaggi privati del GM: AES-GCM con una chiave ricavata da quella del link, così sul broker pubblico
-    // passano solo byte illeggibili e solo il telefono di quel PG può leggerli
-    const _telChiaviAes = new Map();
-    async function _telAes(chiave) {
-      if (_telChiaviAes.has(chiave)) return _telChiaviAes.get(chiave);
-      const h = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('dhvtt-messaggi|' + chiave));
-      const k = await crypto.subtle.importKey('raw', h, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']); _telChiaviAes.set(chiave, k); return k;
+    // Messaggi privati del GM: ogni telefono ha una sua coppia di chiavi ECDH (P-256) e il GM la sua. Dalla chiave privata
+    // dell'uno e pubblica dell'altro nasce la stessa chiave AES-GCM: sul broker pubblico passano solo byte illeggibili e
+    // nemmeno gli altri giocatori (che conoscono il codice del tavolo) possono leggere i messaggi di un PG non loro.
+    async function telGeneraCoppia() {
+      const k = await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveKey']);
+      return { priv: await crypto.subtle.exportKey('jwk', k.privateKey), pub: await crypto.subtle.exportKey('jwk', k.publicKey) };
+    }
+    const _telChiavi = new Map();
+    async function telChiaveCondivisa(privJwk, pubJwk) {
+      const id = JSON.stringify([privJwk && privJwk.d, pubJwk && pubJwk.x, pubJwk && pubJwk.y]);
+      if (_telChiavi.has(id)) return _telChiavi.get(id);
+      const priv = await crypto.subtle.importKey('jwk', privJwk, { name: 'ECDH', namedCurve: 'P-256' }, false, ['deriveKey']);
+      const pub = await crypto.subtle.importKey('jwk', { kty: pubJwk.kty, crv: pubJwk.crv, x: pubJwk.x, y: pubJwk.y }, { name: 'ECDH', namedCurve: 'P-256' }, false, []);
+      const k = await crypto.subtle.deriveKey({ name: 'ECDH', public: pub }, priv, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+      _telChiavi.set(id, k); return k;
     }
     const _b64 = u => { let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); };
     const _deb64 = s => { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
-    async function cifraTelecomando(chiave, testo) {
-      const iv = crypto.getRandomValues(new Uint8Array(12)), k = await _telAes(chiave);
-      const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, k, new TextEncoder().encode(testo)));
-      return { v: 1, iv: _b64(iv), ct: _b64(ct) };
+    async function telCifra(chiave, testo) {
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, chiave, new TextEncoder().encode(testo)));
+      return { v: 2, iv: _b64(iv), ct: _b64(ct) };
     }
-    async function decifraTelecomando(chiave, d) {
+    async function telDecifra(chiave, d) {
       if (!d || !d.iv || !d.ct) return null;
-      const k = await _telAes(chiave), pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: _deb64(d.iv) }, k, _deb64(d.ct));
+      const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: _deb64(d.iv) }, chiave, _deb64(d.ct));
       return new TextDecoder().decode(pt);
     }
 
 (() => {
   const BROKER_PREDEFINITO = 'wss://broker.hivemq.com:8884/mqtt';
-  const h = new URLSearchParams(location.hash.slice(1)), stanza = h.get('s'), pc = h.get('p'), chiave = h.get('k'), broker = h.get('b') || BROKER_PREDEFINITO;
   const $ = id => document.getElementById(id);
-  // App Android: la pagina gira dentro l'app, che le offre window.DHApp (servizio "al tavolo", notifiche, vibrazione)
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, via(k) { try { localStorage.removeItem(k); } catch (e) {} } };
+  const mostra = id => document.querySelectorAll('.schermo').forEach(s => { s.hidden = s.id !== id; });
+  let toastT = null; const avvisa = t => { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600); };
+  // App Android: la pagina gira dentro l'app, che le offre window.DHApp (servizio "al tavolo", notifiche, vibrazione, scanner)
   const APP = (() => { try { return !!(window.DHApp && window.DHApp.nativo()); } catch (e) { return false; } })();
-  if (APP && (!stanza || !pc || !chiave)) {
-    document.body.innerHTML = '<div class="collega"><h1>Collega il tuo personaggio</h1>'
-      + '<ol><li>Inquadra il codice QR del GM con la fotocamera, oppure apri il link che ti ha mandato.</li><li>Nella pagina che si apre tocca <b>📲 Apri nell’app</b>.</li></ol>'
-      + '<p>Oppure incolla qui il link del tuo personaggio:</p><textarea id="link-incolla" placeholder="https://…#s=…&amp;p=…&amp;k=…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>'
-      + '<button type="button" id="link-usa">Collega</button></div>';
-    $('link-usa').onclick = () => window.DHApp.salvaLink($('link-incolla').value);
+  const nativo = (f, ...a) => { try { if (APP && typeof window.DHApp[f] === 'function') { const r = window.DHApp[f](...a); return r === undefined ? true : r; } } catch (e) {} return undefined; };
+  const vibra = ms => { try { if (APP) nativo('vibra', Array.isArray(ms) ? ms.reduce((a, b) => a + b, 0) : ms); else if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (e) {} };
+
+  const h = new URLSearchParams(location.hash.slice(1));
+  const stanza = h.get('t'), chiave = h.get('k'), broker = h.get('b') || BROKER_PREDEFINITO;
+  const tavoloOk = !!(stanza && /^[a-z0-9]{6,}$/.test(stanza) && chiave && /^[a-z0-9]{8,}$/.test(chiave));
+
+  if (!window.crypto || !crypto.subtle) { mostra('s-errore'); $('errore-t').textContent = 'Apri il telecomando da un indirizzo https.'; return; }
+
+  // ---------- ingresso ----------
+  const gh = location.hostname.match(/^([^.]+)\.github\.io$/), repo = location.pathname.split('/').filter(Boolean)[0];
+  const urlApp = gh && repo ? 'https://github.com/' + gh[1] + '/' + repo + '/releases/latest/download/telecomando-daggerheart.apk' : '';
+  let browserOk = false; try { browserOk = sessionStorage.getItem('dh_browser') === '1'; } catch (e) {}
+  if (!APP && !browserOk) {
+    mostra('s-benvenuto');
+    const android = /Android/i.test(navigator.userAgent);
+    if (tavoloOk && android) { $('benv-apri').hidden = false; $('benv-apri').href = 'dhtelecomando://collega?link=' + encodeURIComponent(location.href); $('benv-testo').textContent = 'Hai già l’app? Aprila con il tavolo pronto. Altrimenti scaricala, aprila e inquadra di nuovo il QR del tavolo.'; }
+    if (urlApp) { $('benv-scarica').hidden = false; $('benv-scarica').href = urlApp; }
+    if (tavoloOk) { $('benv-browser').hidden = false; $('benv-browser').onclick = () => { try { sessionStorage.setItem('dh_browser', '1'); } catch (e) {} avvia(); }; }
+    else $('benv-testo').textContent += ' Scaricala, aprila e inquadra il QR del tavolo del GM.';
     return;
   }
-  if (!stanza || !pc || !chiave || !/^[a-z0-9]{6,}$/.test(stanza) || !window.crypto || !crypto.subtle) {
-    document.body.innerHTML = '<div class="errore"><h1>Link non valido</h1><p>' + (!window.crypto || !crypto.subtle ? 'Apri il telecomando da un indirizzo https.' : 'Questo link è incompleto. Chiedi al GM il link del tuo personaggio, oppure inquadra di nuovo il suo codice QR.') + '</p></div>';
+  if (!tavoloOk) {
+    if (!APP) { mostra('s-errore'); $('errore-t').textContent = 'Questo link non è completo. Inquadra di nuovo il QR del tavolo del GM.'; return; }
+    mostra('s-collega');
+    $('collega-scansiona').onclick = () => { if (nativo('scansiona') === undefined) avvisa('Aggiorna l’app per usare la fotocamera'); };
+    $('collega-usa').onclick = () => nativo('salvaLink', $('collega-link').value);
     return;
   }
-  const base = 'dhvtt/v1/' + stanza, mio = base + '/pg/' + pc;
-  let seq = Date.now() * 1000, gmOnline = null, scheda = null, ultimoAgg = 0, servizioAvviato = false;
-  const m = new MqttMini(broker, { clientId: 'dhpg-' + stanza.slice(0, 6) + '-' + Math.random().toString(36).slice(2, 8), keepalive: APP ? 55 : 20, will: { topic: mio + '/presenza', payload: JSON.stringify({ online: false }), retain: true } });
-  const invia = async c => { if (!m.collegato) return; seq = Math.max(seq + 1, Date.now() * 1000); const s = seq; const sig = await firmaTelecomando(chiave, pc + '|' + s + '|' + JSON.stringify(c)); m.publish(mio + '/cmd', JSON.stringify({ seq: s, c, sig })); };
+  avvia();
+
+  function avvia() {
+  const base = 'dhvtt/v2/' + stanza;
+  // identità di questo telefono: un nome casuale e una coppia di chiavi ECDH (per leggere i messaggi privati del GM)
+  let DEV = ls.get('dh_dev', null); if (!DEV || !/^[a-z0-9]{6,32}$/.test(DEV)) { DEV = Array.from(crypto.getRandomValues(new Uint8Array(10)), x => 'abcdefghijkmnpqrstuvwxyz23456789'[x % 32]).join(''); ls.set('dh_dev', DEV); }
+  let coppia = ls.get('dh_dev_chiavi', null);
+  const pronte = (async () => { if (!coppia || !coppia.priv) { coppia = await telGeneraCoppia(); ls.set('dh_dev_chiavi', coppia); } return coppia; })();
+  const K_PG = 'dh_pg_' + stanza, K_CODA = 'dh_coda_' + stanza;
+  let pc = ls.get(K_PG, null), tavolo = null, scheda = null, gmOnline = null, gmPub = null, msgGrezzo = null, mappa = null, servizioAvviato = false;
+  let seq = Date.now() * 1000, coda = ls.get(K_CODA, []);
+  if (pc) scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null);
+
+  const m = new MqttMini(broker, { clientId: 'dhpg-' + DEV.slice(0, 8) + '-' + Math.random().toString(36).slice(2, 6), keepalive: APP ? 55 : 20, will: { topic: base + '/presenza/' + DEV, payload: JSON.stringify({ online: false }), retain: true } });
+  const invia = async (c, perPc) => {
+    if (!m.collegato) return false;
+    const p = perPc || pc; if (!p) return false;
+    seq = Math.max(seq + 1, Date.now() * 1000); const s = seq;
+    const sig = await firmaTelecomando(chiave, DEV + '|' + p + '|' + s + '|' + JSON.stringify(c));
+    m.publish(base + '/cmd', JSON.stringify({ dev: DEV, pc: p, seq: s, c, sig })); return true;
+  };
+  // modifiche alla scheda: partono subito se il GM c'è, altrimenti aspettano in coda (anche se chiudi l'app)
+  async function modifica(c) {
+    applicaLocale(c); disegna();
+    if (m.collegato && gmOnline && pc && !coda.length) { await invia(c); }
+    else { coda.push({ c, pc }); ls.set(K_CODA, coda); mostraCoda(); if (!(m.collegato && gmOnline)) avvisa('⏳ Salvato: arriverà al GM appena è collegato'); svuotaCoda(); }
+  }
+  let svuotando = false;
+  async function svuotaCoda() {
+    if (svuotando || !coda.length || !m.collegato || !gmOnline) return; svuotando = true;
+    let n = 0;
+    try { while (coda.length && m.collegato && gmOnline) { const v = coda[0]; if (v.pc === pc) { await invia(v.c); n++; } coda.shift(); ls.set(K_CODA, coda); await new Promise(r => setTimeout(r, 60)); } if (n > 1) avvisa('✅ Modifiche consegnate al GM'); }
+    finally { svuotando = false; mostraCoda(); }
+  }
+  function mostraCoda() { const n = coda.filter(v => v.pc === pc).length; $('coda').hidden = !n; $('coda-t').textContent = n + (n === 1 ? ' modifica in attesa' : ' modifiche in attesa') + ' del GM: partono appena si collega.'; }
+  // applica subito sul telefono le modifiche (il GM poi conferma con la scheda aggiornata)
+  function applicaLocale(c) {
+    const d = scheda; if (!d) return;
+    const tr = { pf: 'pf', stress: 'stress', speranza: 'speranza', armatura: 'armatura' };
+    if (c.tipo === 'traccia' && tr[c.id] && d[tr[c.id]]) { const a = d[tr[c.id]]; a[0] = Math.max(0, Math.min(a[1], a[0] + c.d)); }
+    else if (c.tipo === 'max' && d.max) {
+      d.max[c.campo] = c.v; const mm = { hpMax: 'pf', stressMax: 'stress', hopeMax: 'speranza', armorMax: 'armatura' };
+      if (mm[c.campo] && d[mm[c.campo]]) { const a = d[mm[c.campo]]; a[1] = c.v; a[0] = Math.min(a[0], c.v); }
+      if (c.campo === 'evasion') d.evasione = c.v; if (c.campo === 'tMaj') d.soglie[0] = c.v; if (c.campo === 'tSev') d.soglie[1] = c.v; if (c.campo === 'proficiency') d.competenza = c.v;
+    }
+    else if (c.tipo === 'oro') { const o = d.zaino.oro; o[c.i] = Math.max(0, o[c.i] + c.d); }
+    else if (c.tipo === 'oggetto') { const o = d.zaino.ogg.find(x => x.id === c.id); if (o) o.n = Math.max(0, o.n + c.d); }
+    else if (c.tipo === 'carta') { const k = d.carte.find(x => x.id === c.id); if (k) k.spesa = !!c.spesa; }
+    else if (c.tipo === 'carta-salva') { const k = c.carta, D = (tavolo && tavolo.domini && tavolo.domini[k.dominio]) || ['', '#a8987a'], v = { nome: k.nome, dk: k.dominio, dom: D[0], col: D[1], liv: k.liv, rich: k.richiamo, uso: k.uso, testo: k.testo, volta: !!k.volta }; const e = k.id && d.carte.find(x => x.id === k.id); if (e) Object.assign(e, v); else d.carte.push(Object.assign({ id: 'nuova' + Date.now(), spesa: false }, v)); }
+    else if (c.tipo === 'carta-togli') d.carte = d.carte.filter(x => x.id !== c.id);
+    else if (c.tipo === 'ogg-salva') { const o = c.ogg, e = o.id && d.zaino.ogg.find(x => x.id === o.id); if (e) Object.assign(e, o); else d.zaino.ogg.push(Object.assign({}, o, { id: 'nuovo' + Date.now() })); }
+    else if (c.tipo === 'ogg-togli') d.zaino.ogg = d.zaino.ogg.filter(x => x.id !== c.id);
+  }
+
+  // ---------- collegamento ----------
   const statoUI = () => {
     const el = $('stato'), t = $('stato-t');
-    if (!m.collegato) { el.className = 'stato ko'; t.textContent = navigator.onLine === false ? 'Senza rete' : 'Riconnessione…'; return; }
-    if (gmOnline === false) { el.className = 'stato attesa'; t.textContent = 'GM non collegato'; return; }
-    if (!scheda) { el.className = 'stato attesa'; t.textContent = 'In attesa del GM'; return; }
-    el.className = 'stato ok'; t.textContent = 'Al tavolo';
+    let cls = 'ok', txt = 'Al tavolo';
+    if (!m.collegato) { cls = 'ko'; txt = navigator.onLine === false ? 'Senza rete' : 'Riconnessione…'; }
+    else if (gmOnline === false) { cls = 'attesa'; txt = 'GM non collegato'; }
+    else if (!scheda) { cls = 'attesa'; txt = 'In attesa del GM'; }
+    el.className = 'stato ' + cls; t.textContent = txt;
+    if (!$('s-scelta').hidden) $('scelta-stato').textContent = !m.collegato ? 'Collegamento al tavolo…' : !tavolo ? 'In attesa del GM: deve attivare i telecomandi.' : gmOnline === false ? 'Il GM non è collegato: puoi scegliere lo stesso.' : 'Tocca il tuo personaggio.';
   };
+  const iscriviPG = p => { m.subscribe(base + '/pg/' + p + '/stato'); m.subscribe(base + '/pg/' + p + '/msg'); };
   m.on('stato', statoUI);
-  m.on('open', () => { m.publish(mio + '/presenza', JSON.stringify({ online: true, ts: Date.now() }), { retain: true }); invia({ tipo: 'ciao' }); statoUI(); });
+  m.on('open', async () => {
+    m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc: pc || '' }), { retain: true });
+    if (pc) { await pronte; invia({ tipo: 'scegli', pub: coppia.pub }); }
+    statoUI(); svuotaCoda();
+  });
   m.on('message', (topic, testo) => {
     let d = null; try { d = JSON.parse(testo); } catch (e) { return; }
-    if (topic === base + '/gm') { gmOnline = !!(d && d.online); statoUI(); return; }
-    if (topic === mio + '/stato') { scheda = d; ultimoAgg = Date.now(); disegna(); statoUI(); if (APP && !servizioAvviato) { servizioAvviato = true; try { window.DHApp.servizio(d.nome || '', true); } catch (e) {} } }
-    if (topic === base + '/mappa') { mappa = d; disegnaMappa(); }
-    if (topic === mio + '/msg') riceviPosta(d);
+    if (topic === base + '/gm') { gmOnline = !!(d && d.online); if (d && d.pub) { gmPub = d.pub; if (msgGrezzo) riceviPosta(msgGrezzo); } statoUI(); if (gmOnline) svuotaCoda(); return; }
+    if (topic === base + '/tavolo') { tavolo = d; disegnaScelta(); controllaProprieta(); return; }
+    if (topic === base + '/mappa') { mappa = d; disegnaMappa(); return; }
+    if (pc && topic === base + '/pg/' + pc + '/stato') {
+      scheda = d; coda.filter(v => v.pc === pc).forEach(v => applicaLocale(v.c));   // le modifiche in coda restano visibili
+      ls.set('dh_scheda_' + stanza + '_' + pc, d); disegna(); statoUI();
+      if (APP && !servizioAvviato) { servizioAvviato = true; nativo('servizio', d.nome || '', true); }
+      return;
+    }
+    if (pc && topic === base + '/pg/' + pc + '/msg') { msgGrezzo = d; riceviPosta(d); }
   });
-  m.subscribe(base + '/gm'); m.subscribe(mio + '/stato'); m.subscribe(base + '/mappa'); m.subscribe(mio + '/msg');
+  m.subscribe(base + '/gm'); m.subscribe(base + '/tavolo'); m.subscribe(base + '/mappa');
+  if (pc) iscriviPG(pc);
   m.connect().catch(() => statoUI());
   window.addEventListener('online', statoUI); window.addEventListener('offline', statoUI);
+  setInterval(() => { statoUI(); svuotaCoda(); }, 4000);
 
-  // ---- scheda ----
-  const tacche = (v, max, n) => { const k = Math.max(0, Math.min(n || max, max)); let s = ''; for (let i = 0; i < k; i++) s += '<i class="' + (i < v ? 'on' : '') + '"></i>'; return s; };
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  // ---------- scelta del personaggio ----------
+  function controllaProprieta() {
+    if (!pc || !tavolo) return;
+    const t = (tavolo.pg || []).find(x => x.id === pc);
+    if (!t) { lasciaPG(false); return; }
+    if (t.chi && t.chi !== DEV) { avvisa('🔁 ' + t.nome + ' è stato preso da un altro telefono'); lasciaPG(false); }
+  }
+  function disegnaScelta() {
+    const box = $('scelte'); if (!tavolo) return;
+    box.innerHTML = (tavolo.pg || []).map(p => { const mio = p.chi === DEV, altro = p.occupato && !mio;
+      return '<button type="button" class="scelta' + (mio ? ' mio' : '') + '" data-pg="' + esc(p.id) + '" style="--c:' + (/^#[0-9a-f]{3,8}$/i.test(p.colore) ? p.colore : '#d4af37') + '"><span class="gemma"></span><span><b>' + esc(p.nome) + '</b><small>' + esc(p.classe) + '</small></span>'
+        + '<span class="chip ' + (mio ? 'oro' : altro ? (p.online ? 'rossa' : '') : 'verde') + '">' + (mio ? 'il tuo' : altro ? (p.online ? 'in uso' : 'scelto') : 'libero') + '</span></button>'; }).join('');
+    box.querySelectorAll('[data-pg]').forEach(b => b.onclick = () => scegli(b.dataset.pg));
+    statoUI();
+  }
+  async function scegli(id) {
+    const t = (tavolo.pg || []).find(x => x.id === id); if (!t) return;
+    if (t.occupato && t.chi !== DEV && !confirm(t.nome + ' è già stato scelto da un altro telefono' + (t.online ? ' (collegato adesso)' : '') + '. Prenderlo comunque?')) return;
+    pc = id; ls.set(K_PG, pc); scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null); msgGrezzo = null; posta = ls.get(chPosta(), []);
+    iscriviPG(pc); await pronte; await invia({ tipo: 'scegli', pub: coppia.pub });
+    m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc }), { retain: true });
+    vibra(20); entraInGioco();
+  }
+  function lasciaPG(avvisaGM) {
+    if (avvisaGM && pc) invia({ tipo: 'lascia' });
+    pc = null; ls.via(K_PG); scheda = null; servizioAvviato = false; nativo('servizio', '', false); chiudiFoglio();
+    mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta();
+  }
+  $('scelta-tavolo').onclick = () => nativo('cambiaLink');
+  function entraInGioco() { mostra('s-gioco'); vaiA(ls.get('dh_tel_pag', 'gioco')); disegna(); mostraCoda(); aggiornaPostaBtn(); statoUI(); if (APP) nativo('schermoAcceso', true); }
+
+  // ---------- schede in basso ----------
+  function vaiA(pag) {
+    if (!['gioco', 'scheda', 'carte', 'zaino', 'mappa'].includes(pag)) pag = 'gioco';
+    ls.set('dh_tel_pag', pag);
+    document.querySelectorAll('#schede button').forEach(b => b.classList.toggle('attivo', b.dataset.pag === pag));
+    document.querySelectorAll('main .pagina').forEach(p => { p.hidden = p.id !== 'pag-' + pag; });
+    if (pag !== 'gioco') lasciaJoy();
+    $('contenuto').scrollTop = 0;
+    if (pag === 'mappa') disegnaMappa();
+  }
+  document.querySelectorAll('#schede button').forEach(b => b.onclick = () => vaiA(b.dataset.pag));
+
+  // ---------- disegno ----------
+  const tacche = (v, max) => { const n = Math.min(Math.max(max, 0), 14); let s = ''; for (let i = 0; i < n; i++) s += '<i class="' + (i < v ? 'on' : '') + '"></i>'; return s; };
+  let modificaScheda = null; const cartaAperta = {};
   function disegna() {
-    const d = scheda; if (!d) return;
-    document.documentElement.style.setProperty('--pg', /^#[0-9a-f]{3,8}$/i.test(d.colore) ? d.colore : '#d4af37');
+    const d = scheda;
+    if (!d) { $('nome').textContent = ((tavolo && (tavolo.pg || []).find(x => x.id === pc)) || {}).nome || 'Personaggio'; return; }
+    const col = /^#[0-9a-f]{3,8}$/i.test(d.colore) ? d.colore : '#d4af37';
+    document.documentElement.style.setProperty('--pg', col); $('h-gemma').style.setProperty('--c', col);
     $('nome').textContent = d.nome || 'Personaggio'; $('classe').textContent = d.classe || ''; document.title = (d.nome || 'PG') + ' · telecomando';
-    $('scena').textContent = d.scena ? 'Scena: ' + d.scena : '';
-    const tr = (cls, id, nome, a) => '<div class="traccia ' + cls + '"><span>' + nome + '</span><strong>' + (a ? a[0] + ' / ' + a[1] : '–') + '</strong><div class="tacche">' + (a ? tacche(a[0], a[1], 12) : '') + '</div>'
-      + (d.tracce ? '<div class="pm"><button type="button" data-t="' + id + '" data-d="-1" aria-label="' + nome + ' meno uno">−</button><button type="button" data-t="' + id + '" data-d="1" aria-label="' + nome + ' più uno">+</button></div>' : '') + '</div>';
-    $('tracce').innerHTML = tr('pf', 'pf', 'Punti Ferita', d.pf) + tr('stress', 'stress', 'Stress', d.stress) + tr('speranza', 'speranza', 'Speranza', d.speranza) + tr('armatura', 'armatura', 'Armatura', d.armatura);
-    $('tracce').querySelectorAll('button[data-t]').forEach(b => b.onclick = () => { invia({ tipo: 'traccia', id: b.dataset.t, d: +b.dataset.d }); vibra(12); });
-    $('extra').innerHTML = (d.evasione ? '<span>Evasione <b>' + esc(d.evasione) + '</b></span>' : '') + (d.soglie ? '<span>Soglie <b>' + esc(d.soglie[0]) + ' / ' + esc(d.soglie[1]) + '</b></span>' : '') + (d.paura != null ? '<span>Paura del GM <b>' + esc(d.paura) + '</b></span>' : '');
-    $('condizioni').innerHTML = (d.condizioni || []).map(c => '<em>' + esc(c) + '</em>').join('');
-    disegnaZaino(d);
-    const box = $('abilita'); box.innerHTML = '';
+    const perm = d.permessi || { tracce: d.tracce, scheda: true };
+    // gioco: risorse, condizioni, abilità
+    const ris = (cls, id, nome, a) => '<div class="ris ' + cls + '"><div class="testa">' + nome + '<strong>' + (a ? a[0] + '<small> / ' + a[1] + '</small>' : '–') + '</strong></div><div class="tacche">' + (a ? tacche(a[0], a[1]) : '') + '</div>'
+      + (perm.tracce ? '<div class="pm"><button type="button" data-t="' + id + '" data-d="-1" aria-label="' + nome + ' meno uno">−</button><button type="button" data-t="' + id + '" data-d="1" aria-label="' + nome + ' più uno">+</button></div>' : '') + '</div>';
+    $('risorse').innerHTML = ris('pf', 'pf', 'Punti Ferita', d.pf) + ris('stress', 'stress', 'Stress', d.stress) + ris('speranza', 'speranza', 'Speranza', d.speranza) + ris('armatura', 'armatura', 'Armatura', d.armatura);
+    $('risorse').querySelectorAll('button[data-t]').forEach(b => b.onclick = () => { modifica({ tipo: 'traccia', id: b.dataset.t, d: +b.dataset.d }); vibra(12); });
+    $('condizioni').innerHTML = (d.condizioni || []).map(c => '<span class="chip rossa">' + esc(c) + '</span>').join('');
+    const ab = $('abilita'); ab.innerHTML = '';
     (d.abilita || []).forEach(a => {
       if (a.scelta) {
         const lab = document.createElement('label'); lab.textContent = a.label;
         const sel = document.createElement('select'); a.scelta.forEach(o => { const op = document.createElement('option'); op.value = o.id; op.textContent = o.label; if (o.id === a.val) op.selected = true; sel.appendChild(op); });
-        sel.onchange = () => { invia({ tipo: 'abilita', id: a.id, val: sel.value }); vibra(15); };
-        lab.appendChild(sel); box.appendChild(lab);
-        if (a.info) { const sm = document.createElement('small'); sm.textContent = a.info; box.appendChild(sm); }
+        sel.onchange = () => { if (!gmOnline) { avvisa('Il GM non è collegato'); sel.value = a.val; return; } invia({ tipo: 'abilita', id: a.id, val: sel.value }); vibra(15); };
+        lab.appendChild(sel); ab.appendChild(lab);
+        if (a.info) { const sm = document.createElement('small'); sm.textContent = a.info; ab.appendChild(sm); }
       } else {
         const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.attivo) b.className = 'attivo';
-        b.onclick = () => { invia({ tipo: 'abilita', id: a.id }); vibra(20); };
-        box.appendChild(b);
+        b.onclick = () => { if (!gmOnline) { avvisa('Il GM non è collegato'); return; } invia({ tipo: 'abilita', id: a.id }); vibra(20); };
+        ab.appendChild(b);
       }
     });
+    disegnaScheda(d, perm); disegnaCarte(d, perm); disegnaZaino(d, perm);
   }
-  // ---- zaino e carte dominio ----
-  function disegnaZaino(d) {
-    const z = d.zaino || { oro: [0, 0, 0], ogg: [] }, puo = !!d.tracce, o = z.oro || [0, 0, 0];
-    $('zaino').innerHTML = '<div class="oro">' + [['🪙', 'Manciate'], ['👝', 'Sacchetti'], ['🧰', 'Forzieri']].map((x, i) => '<div>' + x[0] + ' ' + x[1] + '<b>' + esc(o[i] || 0) + '</b>'
-        + (puo ? '<div class="pm"><button type="button" data-oro="' + i + '" data-d="-1" aria-label="' + x[1] + ' meno uno">−</button><button type="button" data-oro="' + i + '" data-d="1" aria-label="' + x[1] + ' più uno">+</button></div>' : '') + '</div>').join('') + '</div>'
-      + ((z.ogg || []).length ? z.ogg.map(g => '<div class="ogg' + (g.n <= 0 ? ' finito' : '') + '"><div class="t"><b>' + esc(g.nome) + '</b>' + (g.nota ? '<small>' + esc(g.nota) + '</small>' : '') + '</div><span class="q">×' + esc(g.n) + '</span>'
-        + (puo && g.cons && g.n > 0 ? '<button type="button" data-ogg="' + esc(g.id) + '">Usa</button>' : '') + '</div>').join('') : '<div class="ogg"><div class="t"><small>Lo zaino è vuoto.</small></div></div>');
-    $('zaino').querySelectorAll('[data-oro]').forEach(b => b.onclick = () => { invia({ tipo: 'oro', i: +b.dataset.oro, d: +b.dataset.d }); vibra(10); });
-    $('zaino').querySelectorAll('[data-ogg]').forEach(b => b.onclick = () => { invia({ tipo: 'oggetto', id: b.dataset.ogg, d: -1 }); vibra(18); b.disabled = true; });
-    const usi = { sempre: 'Sempre', riposo: 'Una volta per riposo', sessione: 'Una volta per sessione' };
-    const carta = c => '<div class="carta' + (c.spesa ? ' spesa' : '') + '" style="--dc:' + (/^#[0-9a-f]{3,8}$/i.test(c.col) ? c.col : '#a8987a') + '"><div class="dom"><span>' + esc(c.dom) + ' · liv ' + esc(c.liv) + '</span><span>richiamo ' + esc(c.rich) + '</span></div><h3>' + esc(c.nome) + '</h3><p>' + esc(c.testo) + '</p>'
-      + '<div class="piede"><span>' + esc(usi[c.uso] || '') + (c.spesa ? ' · già usata' : '') + '</span>' + (puo && !c.volta && c.uso !== 'sempre' ? '<button type="button" data-carta="' + esc(c.id) + '" data-spesa="' + (c.spesa ? 0 : 1) + '">' + (c.spesa ? '↺ Pronta' : 'Usa') + '</button>' : '') + '</div></div>';
+  const CAMPI = [['evasion', 'Evasione'], ['proficiency', 'Competenza'], ['tMaj', 'Soglia Maggiore'], ['tSev', 'Soglia Grave'], ['hpMax', 'PF massimi'], ['stressMax', 'Stress massimo'], ['hopeMax', 'Speranza massima'], ['armorMax', 'Armatura (slot)']];
+  const LIMITI = { hpMax: [1, 30], stressMax: [1, 20], hopeMax: [1, 12], armorMax: [0, 12], evasion: [0, 40], tMaj: [1, 99], tSev: [1, 199], proficiency: [1, 6] };
+  function disegnaScheda(d, perm) {
+    const mx = d.max || {}, ed = modificaScheda;
+    let h = '<div class="riquadro"><div class="titoletto" style="margin:0 0 6px">Scena <span class="poi">Paura del GM <b style="color:var(--pf)">' + esc(d.paura) + '</b></span></div><div>' + esc(d.scena) + '</div></div>';
+    h += '<div class="titoletto">Valori' + (perm.scheda && !ed ? '<span class="poi"><button type="button" class="secondario" id="sch-modifica" style="min-height:34px;padding:0 12px">✏️ Modifica</button></span>' : '') + '</div>';
+    h += '<div class="valori">' + CAMPI.map(([k, n]) => { const v = ed ? ed[k] : mx[k];
+      return '<div class="valore' + (ed && ed[k] !== mx[k] ? ' cambiato' : '') + '"><span>' + n + '</span>' + (ed ? '<div class="passo"><button type="button" data-k="' + k + '" data-d="-1" aria-label="' + n + ' meno">−</button><strong id="v-' + k + '">' + esc(v) + '</strong><button type="button" data-k="' + k + '" data-d="1" aria-label="' + n + ' più">+</button></div>' : '<strong id="v-' + k + '">' + esc(v == null ? '–' : v) + '</strong>') + '</div>'; }).join('') + '</div>';
+    if (ed) h += '<div class="riga-azioni"><button type="button" class="secondario" id="sch-annulla">Annulla</button><button type="button" class="grande" id="sch-salva">Salva</button></div>';
+    if (d.attacchi) h += '<div class="titoletto">Attacchi</div><div class="riquadro testo-lungo">' + esc(d.attacchi) + '</div>';
+    if (d.tratti) h += '<div class="titoletto">Tratti</div><div class="riquadro testo-lungo">' + esc(d.tratti) + '</div>';
+    $('pag-scheda').innerHTML = h;
+    const b = $('sch-modifica'); if (b) b.onclick = () => { modificaScheda = Object.assign({}, mx); disegna(); };
+    if (ed) {
+      $('pag-scheda').querySelectorAll('[data-k]').forEach(x => x.onclick = () => { const k = x.dataset.k, L = LIMITI[k]; ed[k] = Math.max(L[0], Math.min(L[1], (ed[k] || 0) + (+x.dataset.d))); disegna(); });
+      $('sch-annulla').onclick = () => { modificaScheda = null; disegna(); };
+      $('sch-salva').onclick = async () => { const camb = CAMPI.map(c => c[0]).filter(k => ed[k] !== mx[k]); modificaScheda = null; for (const k of camb) await modifica({ tipo: 'max', campo: k, v: ed[k] }); if (camb.length) avvisa('✅ Scheda aggiornata'); disegna(); };
+    }
+  }
+  const USI = { sempre: 'Sempre', riposo: 'Una volta per riposo', sessione: 'Una volta per sessione' };
+  function disegnaCarte(d, perm) {
     const att = (d.carte || []).filter(c => !c.volta), vol = (d.carte || []).filter(c => c.volta);
-    $('carte').innerHTML = (att.length ? att.map(carta).join('') : '<small style="color:var(--muto)">Nessuna carta nell’equipaggiamento.</small>') + (vol.length ? '<details class="volta"><summary>Nella Volta (' + vol.length + ')</summary>' + vol.map(carta).join('') + '</details>' : '');
-    $('carte').querySelectorAll('[data-carta]').forEach(b => b.onclick = () => { invia({ tipo: 'carta', id: b.dataset.carta, spesa: b.dataset.spesa === '1' }); vibra(18); });
-    $('carte-box').querySelector('summary').firstChild.textContent = '🃏 Carte dominio' + (att.length ? ' (' + att.filter(c => !c.spesa).length + '/' + att.length + ' pronte)' : '');
+    const carta = c => '<div class="carta' + (c.spesa ? ' spesa' : '') + (cartaAperta[c.id] ? ' aperta' : '') + '" data-cid="' + esc(c.id) + '" style="--dc:' + (/^#[0-9a-f]{3,8}$/i.test(c.col) ? c.col : '#a8987a') + '"><div class="dom"><span>' + esc(c.dom) + ' · liv ' + esc(c.liv) + '</span><span>richiamo ' + esc(c.rich) + '</span></div><h3>' + esc(c.nome) + '</h3><p>' + esc(c.testo) + '</p>'
+      + '<div class="piede"><span class="uso">' + esc(USI[c.uso] || '') + (c.spesa ? ' · usata' : '') + '</span>'
+      + (perm.tracce && !c.volta && c.uso !== 'sempre' ? '<button type="button" class="usa" data-az="usa">' + (c.spesa ? '↺ Pronta' : 'Usa') + '</button>' : '')
+      + (perm.scheda ? '<button type="button" data-az="sposta" aria-label="' + (c.volta ? 'Metti nell’equipaggiamento' : 'Metti nella Volta') + '">' + (c.volta ? '⬆ Equip.' : '⬇ Volta') + '</button><button type="button" data-az="modifica" aria-label="Modifica">✏️</button>' : '') + '</div></div>';
+    let h = '<div class="titoletto">Equipaggiamento <span class="poi"><span class="chip ' + (att.length > 5 ? 'rossa' : '') + '">' + att.length + ' / 5</span></span></div>';
+    h += att.length ? att.map(carta).join('') : '<div class="vuoto">Nessuna carta nell’equipaggiamento.</div>';
+    h += '<div class="titoletto">Volta <span class="poi"><span class="chip">' + vol.length + '</span></span></div>';
+    h += vol.length ? vol.map(carta).join('') : '<div class="vuoto">La Volta è vuota.</div>';
+    if (perm.scheda) h += '<button type="button" class="secondario" id="carta-nuova">＋ Nuova carta</button>';
+    $('pag-carte').innerHTML = h;
+    $('pag-carte').querySelectorAll('.carta').forEach(el => {
+      const c = (d.carte || []).find(x => x.id === el.dataset.cid); if (!c) return;
+      el.querySelector('p').onclick = () => { cartaAperta[c.id] = !cartaAperta[c.id]; el.classList.toggle('aperta'); };
+      el.querySelectorAll('[data-az]').forEach(b => b.onclick = () => {
+        const az = b.dataset.az;
+        if (az === 'usa') { modifica({ tipo: 'carta', id: c.id, spesa: !c.spesa }); vibra(15); }
+        else if (az === 'sposta') { if (c.volta && att.length >= 5 && !confirm('Hai già 5 carte nell’equipaggiamento (il massimo di Daggerheart). Spostarla lo stesso?')) return; modifica({ tipo: 'carta-salva', carta: Object.assign(cartaDati(c), { volta: !c.volta }) }); }
+        else editorCarta(c);
+      });
+    });
+    const n = $('carta-nuova'); if (n) n.onclick = () => editorCarta(null);
   }
-  ['zaino-box', 'carte-box'].forEach(id => { try { if (localStorage.getItem('dh_tel_' + id) === '1') $(id).open = true; } catch (e) {} $(id).addEventListener('toggle', () => { try { localStorage.setItem('dh_tel_' + id, $(id).open ? '1' : '0'); } catch (e) {} }); });
+  const cartaDati = c => ({ id: c.id, nome: c.nome, dominio: c.dk, liv: c.liv, richiamo: c.rich, uso: c.uso, testo: c.testo, volta: !!c.volta });
+  function editorCarta(c) {
+    const dom = (tavolo && tavolo.domini) || {}, k = c ? cartaDati(c) : { nome: '', dominio: Object.keys(dom)[0] || 'grazia', liv: 1, richiamo: 0, uso: 'sempre', testo: '', volta: false };
+    apriFoglio('<h2>' + (c ? '✏️ Modifica carta' : '＋ Nuova carta') + '</h2>'
+      + '<label>Nome<input type="text" id="ec-nome" maxlength="60" value="' + esc(k.nome) + '"></label>'
+      + '<div class="due"><label>Dominio<select id="ec-dom">' + Object.entries(dom).map(([id, v]) => '<option value="' + esc(id) + '"' + (id === k.dominio ? ' selected' : '') + '>' + esc(v[0]) + '</option>').join('') + '</select></label>'
+      + '<label>Uso<select id="ec-uso">' + Object.entries(USI).map(([id, v]) => '<option value="' + id + '"' + (id === k.uso ? ' selected' : '') + '>' + v + '</option>').join('') + '</select></label></div>'
+      + '<div class="due"><label>Livello<input type="number" id="ec-liv" min="1" max="10" value="' + esc(k.liv) + '"></label><label>Costo di richiamo<input type="number" id="ec-rich" min="0" max="5" value="' + esc(k.richiamo) + '"></label></div>'
+      + '<label>Testo<textarea id="ec-testo" rows="5" maxlength="600">' + esc(k.testo) + '</textarea></label>'
+      + '<label class="spunta"><input type="checkbox" id="ec-volta"' + (k.volta ? ' checked' : '') + '> Nella Volta (non nell’equipaggiamento)</label>'
+      + '<div class="riga-azioni">' + (c ? '<button type="button" class="secondario" id="ec-togli" style="color:#ffb3b8">🗑 Togli</button>' : '<button type="button" class="secondario" id="ec-annulla">Annulla</button>') + '<button type="button" class="grande" id="ec-salva">Salva</button></div>');
+    if (!c) $('ec-annulla').onclick = chiudiFoglio;
+    else $('ec-togli').onclick = () => { if (confirm('Togliere la carta “' + c.nome + '”?')) { modifica({ tipo: 'carta-togli', id: c.id }); chiudiFoglio(); } };
+    $('ec-salva').onclick = () => {
+      const nome = $('ec-nome').value.trim(); if (!nome) { avvisa('Dai un nome alla carta'); $('ec-nome').focus(); return; }
+      modifica({ tipo: 'carta-salva', carta: { id: c ? c.id : undefined, nome, dominio: $('ec-dom').value, liv: +$('ec-liv').value || 1, richiamo: +$('ec-rich').value || 0, uso: $('ec-uso').value, testo: $('ec-testo').value, volta: $('ec-volta').checked } });
+      chiudiFoglio();
+    };
+  }
+  function disegnaZaino(d, perm) {
+    const z = d.zaino || { oro: [0, 0, 0], ogg: [] }, o = z.oro || [0, 0, 0];
+    let h = '<div class="titoletto">Oro</div><div class="oro">' + [['🪙', 'Manciate'], ['👝', 'Sacchetti'], ['🧰', 'Forzieri']].map((x, i) => '<div class="valore"><span>' + x[0] + ' ' + x[1] + '</span>'
+      + (perm.tracce ? '<div class="passo"><button type="button" data-oro="' + i + '" data-d="-1" aria-label="' + x[1] + ' meno">−</button><strong>' + esc(o[i] || 0) + '</strong><button type="button" data-oro="' + i + '" data-d="1" aria-label="' + x[1] + ' più">+</button></div>' : '<strong>' + esc(o[i] || 0) + '</strong>') + '</div>').join('') + '</div>';
+    h += '<div class="titoletto">Oggetti</div>';
+    h += (z.ogg || []).length ? z.ogg.map(g => '<div class="ogg' + (g.n <= 0 ? ' finito' : '') + '" data-oid="' + esc(g.id) + '"><div class="t"><b>' + esc(g.nome) + '</b>' + (g.nota ? '<small>' + esc(g.nota) + '</small>' : '') + '</div><span class="q">×' + esc(g.n) + '</span>'
+      + (perm.tracce && g.cons && g.n > 0 ? '<button type="button" data-az="usa">Usa</button>' : '') + (perm.scheda ? '<button type="button" data-az="modifica" aria-label="Modifica">✏️</button>' : '') + '</div>').join('') : '<div class="vuoto">Lo zaino è vuoto.</div>';
+    if (perm.scheda) h += '<button type="button" class="secondario" id="ogg-nuovo">＋ Nuovo oggetto</button>';
+    $('pag-zaino').innerHTML = h;
+    $('pag-zaino').querySelectorAll('[data-oro]').forEach(b => b.onclick = () => { modifica({ tipo: 'oro', i: +b.dataset.oro, d: +b.dataset.d }); vibra(10); });
+    $('pag-zaino').querySelectorAll('.ogg').forEach(el => { const g = z.ogg.find(x => x.id === el.dataset.oid); if (!g) return;
+      el.querySelectorAll('[data-az]').forEach(b => b.onclick = () => { if (b.dataset.az === 'usa') { modifica({ tipo: 'oggetto', id: g.id, d: -1 }); vibra(18); } else editorOggetto(g); }); });
+    const n = $('ogg-nuovo'); if (n) n.onclick = () => editorOggetto(null);
+  }
+  function editorOggetto(g) {
+    const o = g || { nome: '', n: 1, nota: '', cons: false };
+    apriFoglio('<h2>' + (g ? '✏️ Modifica oggetto' : '＋ Nuovo oggetto') + '</h2>'
+      + '<label>Nome<input type="text" id="eo-nome" maxlength="60" value="' + esc(o.nome) + '"></label>'
+      + '<div class="due"><label>Quantità<input type="number" id="eo-n" min="0" max="99" value="' + esc(o.n) + '"></label><label class="spunta" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="eo-cons"' + (o.cons ? ' checked' : '') + '> Si consuma</label></div>'
+      + '<label>Nota<input type="text" id="eo-nota" maxlength="160" value="' + esc(o.nota) + '" placeholder="effetto, dove si trova…"></label>'
+      + '<div class="riga-azioni">' + (g ? '<button type="button" class="secondario" id="eo-togli" style="color:#ffb3b8">🗑 Togli</button>' : '<button type="button" class="secondario" id="eo-annulla">Annulla</button>') + '<button type="button" class="grande" id="eo-salva">Salva</button></div>');
+    if (!g) $('eo-annulla').onclick = chiudiFoglio;
+    else $('eo-togli').onclick = () => { if (confirm('Togliere “' + g.nome + '” dallo zaino?')) { modifica({ tipo: 'ogg-togli', id: g.id }); chiudiFoglio(); } };
+    $('eo-salva').onclick = () => {
+      const nome = $('eo-nome').value.trim(); if (!nome) { avvisa('Dai un nome all’oggetto'); $('eo-nome').focus(); return; }
+      modifica({ tipo: 'ogg-salva', ogg: { id: g ? g.id : undefined, nome, n: Math.max(0, Math.min(99, +$('eo-n').value || 0)), nota: $('eo-nota').value.trim(), cons: $('eo-cons').checked } });
+      chiudiFoglio();
+    };
+  }
+  // fogli dal basso
+  function apriFoglio(html) { $('foglio').innerHTML = html; $('velo').hidden = false; lasciaJoy(); }
+  function chiudiFoglio() { $('velo').hidden = true; $('foglio').innerHTML = ''; }
+  $('velo').addEventListener('click', e => { if (e.target === $('velo')) chiudiFoglio(); });
 
-  // ---- messaggi privati del GM (cifrati con la chiave del link) ----
-  const CH_POSTA = 'dh_tel_posta_' + stanza + '_' + pc;
-  let posta = []; try { posta = JSON.parse(localStorage.getItem(CH_POSTA) || '[]') || []; } catch (e) { posta = []; }
-  const salvaPosta = () => { try { localStorage.setItem(CH_POSTA, JSON.stringify(posta.slice(-15))); } catch (e) { try { localStorage.setItem(CH_POSTA, JSON.stringify(posta.slice(-15).map(v => Object.assign({}, v, { img: null })))); } catch (e2) {} } };
+  // ---------- menu ----------
+  $('menu-btn').onclick = () => {
+    let lib = false; try { lib = APP && window.DHApp.batteriaLibera(); } catch (e) {}
+    apriFoglio('<h2>☰ Menu</h2>'
+      + '<button type="button" class="voce" id="mn-pg">🔄 Cambia personaggio</button>'
+      + (APP ? '<button type="button" class="voce" id="mn-batteria">🔋 Resta collegato in tasca <small>' + (lib ? 'attivo' : 'tocca per permetterlo') + '</small></button>'
+        + '<button type="button" class="voce" id="mn-tavolo">📷 Cambia tavolo (nuovo QR)</button>' : '')
+      + '<button type="button" class="voce" id="mn-chiudi">Chiudi</button>'
+      + '<small style="color:var(--muto);text-align:center">' + (APP ? 'App versione ' + esc(nativo('versione') || '?') + ' · ' : '') + 'telefono ' + esc(DEV.slice(0, 6)) + '</small>');
+    $('mn-pg').onclick = () => { chiudiFoglio(); if (confirm('Lasciare il personaggio e sceglierne un altro?')) lasciaPG(true); };
+    $('mn-chiudi').onclick = chiudiFoglio;
+    if (APP) { $('mn-batteria').onclick = () => { nativo('batteria'); chiudiFoglio(); }; $('mn-tavolo').onclick = () => { chiudiFoglio(); if (confirm('Collegarti a un altro tavolo?')) nativo('cambiaLink'); }; }
+  };
+
+  // ---------- messaggi privati del GM (cifrati per questo telefono) ----------
+  const chPosta = () => 'dh_tel_posta_' + stanza + '_' + pc;
+  let posta = pc ? ls.get(chPosta(), []) : [];
+  const salvaPosta = () => { try { localStorage.setItem(chPosta(), JSON.stringify(posta.slice(-15))); } catch (e) { ls.set(chPosta(), posta.slice(-15).map(v => Object.assign({}, v, { img: null }))); } };
   async function riceviPosta(d) {
-    let lista = null; try { const t = await decifraTelecomando(chiave, d); const o = JSON.parse(t); if (o && o.pc === pc) lista = o.lista; } catch (e) { return; }
+    if (!gmPub || !pc) return;
+    let lista = null;
+    try { await pronte; const k = await telChiaveCondivisa(coppia.priv, gmPub); const o = JSON.parse(await telDecifra(k, d)); if (o && o.pc === pc && o.dev === DEV) lista = o.lista; } catch (e) { return; }
     if (!Array.isArray(lista)) return;
     let nuovi = 0;
     lista.forEach(v => { if (!v || !v.id) return; const g = posta.find(x => x.id === v.id); if (g) { if (v.img && !g.img) g.img = v.img; return; } posta.push({ id: v.id, ts: v.ts, testo: String(v.testo || ''), img: typeof v.img === 'string' && v.img.startsWith('data:image/') ? v.img : null, letto: 0 }); nuovi++; });
     posta.sort((a, b) => a.ts - b.ts); posta.forEach((v, i) => { if (i < posta.length - 3) v.img = null; }); salvaPosta(); aggiornaPostaBtn();
     if (nuovi) {
       vibra([60, 60, 120]); mostraPosta();
-      if (APP) { const u = posta[posta.length - 1]; try { window.DHApp.notifica('✉️ ' + ((scheda && scheda.nome) || 'Telecomando') + ': messaggio dal GM', (u && u.testo) || (u && u.img ? 'Un’immagine dal GM' : '')); } catch (e) {} }
+      if (APP) { const u = posta[posta.length - 1]; nativo('notifica', '✉️ ' + ((scheda && scheda.nome) || 'Telecomando') + ': messaggio dal GM', (u && u.testo) || (u && u.img ? 'Un’immagine dal GM' : '')); }
     }
   }
   function aggiornaPostaBtn() { const n = posta.filter(v => !v.letto).length; $('posta-btn').hidden = !posta.length; $('posta-n').textContent = n ? n : ''; }
@@ -353,18 +646,17 @@
     if (!posta.length) return;
     const da = posta.filter(v => !v.letto), ult = da.length ? da : [posta[posta.length - 1]], fmt = ts => { try { return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
     const vecchi = posta.filter(v => !ult.includes(v)).slice(-6).reverse();
-    $('posta-corpo').innerHTML = ult.map(v => '<div class="testo">' + esc(v.testo) + '</div>' + (v.img ? '<img alt="Immagine dal GM" src="' + v.img.replace(/"/g, '') + '">' : '') + '<div class="quando">' + fmt(v.ts) + '</div>').join('<hr style="border:0;border-top:1px solid #3a2d1c">')
-      + (vecchi.length ? '<div class="vecchi">' + vecchi.map(v => '<div>' + esc(v.testo) + (v.img ? ' 🖼️' : '') + ' <small style="color:var(--muto)">' + fmt(v.ts) + '</small></div>').join('') + '</div>' : '');
-    $('posta').style.display = 'flex'; $('posta').dataset.ids = ult.map(v => v.id).join(',');
+    apriFoglio('<div class="lettera" id="posta" style="display:flex;flex-direction:column;gap:10px"><h2>✉️ Dal GM</h2>' + ult.map(v => '<div class="testo">' + esc(v.testo) + '</div>' + (v.img ? '<img alt="Immagine dal GM" src="' + v.img.replace(/"/g, '') + '">' : '') + '<div class="quando">' + fmt(v.ts) + '</div>').join('<hr style="border:0;border-top:1px solid var(--linea);width:100%">')
+      + (vecchi.length ? '<div class="vecchi">' + vecchi.map(v => '<div>' + esc(v.testo) + (v.img ? ' 🖼️' : '') + ' <small style="color:var(--muto)">' + fmt(v.ts) + '</small></div>').join('') + '</div>' : '')
+      + '<button type="button" class="grande" id="posta-chiudi">Ho letto</button></div>');
+    $('posta-chiudi').onclick = () => { ult.forEach(v => { if (!v.letto) { v.letto = Date.now(); invia({ tipo: 'letto', id: v.id }); } }); salvaPosta(); aggiornaPostaBtn(); chiudiFoglio(); };
   }
-  $('posta-chiudi').onclick = () => { $('posta').style.display = 'none'; ($('posta').dataset.ids || '').split(',').forEach(id => { const v = posta.find(x => x.id === id); if (v && !v.letto) { v.letto = Date.now(); invia({ tipo: 'letto', id }); } }); salvaPosta(); aggiornaPostaBtn(); };
-  $('posta-btn').onclick = () => { mostraPosta(); if (!$('posta-corpo').innerHTML) $('posta-corpo').textContent = 'Nessun messaggio.'; };
-  aggiornaPostaBtn();
+  $('posta-btn').onclick = mostraPosta;
 
-  // ---- mini-mappa: centrata su di te, girata come la telecamera del tavolo (in alto = avanti del joystick) ----
-  let mappa = null, zoom = 3;
+  // ---------- mini-mappa: centrata su di te, girata come la telecamera del tavolo (in alto = avanti del joystick) ----------
+  let zoom = ls.get('dh_tel_zoom', 3);
   function disegnaMappa() {
-    const cv = $('mappa'); if (!cv || !mappa || !$('mappa-box').open) return;
+    const cv = $('mappa'); if (!cv || !mappa || $('pag-mappa').hidden) return;
     const g = cv.getContext('2d'), W = cv.width, io = (mappa.pg || []).find(p => p.id === pc) || { x: 0, z: 0, y: 0 };
     const th = (mappa.cam || [0, 0, 0])[2], fx = -Math.sin(th), fz = -Math.cos(th), rx = -fz, rz = fx, k = W / 2 * zoom;
     const P = (x, z) => { const dx = x - io.x, dz = z - io.z; return [W / 2 + (dx * rx + dz * rz) * k, W / 2 - (dx * fx + dz * fz) * k]; };
@@ -379,52 +671,33 @@
       g.fillStyle = p.c; g.beginPath(); g.arc(q[0], q[1], mio ? 15 : 11, 0, 7); g.fill(); g.lineWidth = mio ? 4 : 2; g.strokeStyle = mio ? '#fff' : '#000'; g.stroke();
       g.fillStyle = '#f2e4c4'; g.font = '600 22px Inter, sans-serif'; g.textAlign = 'center'; g.fillText(mio ? 'Tu' : (p.n || '').split(' ')[0], q[0], q[1] - 20); });
     g.fillStyle = '#a8987a'; g.font = '600 20px Inter, sans-serif'; g.textAlign = 'center'; g.fillText('▲ avanti', W / 2, 26);
+    $('mappa-scena').textContent = scheda ? scheda.scena || '' : '';
   }
-  $('zoom-piu').onclick = () => { zoom = Math.min(12, zoom * 1.5); disegnaMappa(); };
-  $('zoom-meno').onclick = () => { zoom = Math.max(1, zoom / 1.5); disegnaMappa(); };
-  try { if (localStorage.getItem('dh_tel_mappa') === '1') $('mappa-box').open = true; } catch (e) {}
-  $('mappa-box').addEventListener('toggle', () => { try { localStorage.setItem('dh_tel_mappa', $('mappa-box').open ? '1' : '0'); } catch (e) {} disegnaMappa(); });
-  const vibra = ms => { try { if (APP) window.DHApp.vibra(Array.isArray(ms) ? ms.reduce((a, b) => a + b, 0) : ms); else if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (e) {} };
+  $('zoom-piu').onclick = () => { zoom = Math.min(12, zoom * 1.5); ls.set('dh_tel_zoom', zoom); disegnaMappa(); };
+  $('zoom-meno').onclick = () => { zoom = Math.max(1, zoom / 1.5); ls.set('dh_tel_zoom', zoom); disegnaMappa(); };
 
-  // ---- joystick ----
+  // ---------- joystick ----------
   const med = $('medaglione'), pom = $('pomello'); let dito = null, vx = 0, vy = 0, invioTimer = null;
   const muovi = e => {
     const r = med.getBoundingClientRect(), R = r.width / 2, cx = r.left + R, cy = r.top + R;
-    let dx = e.clientX - cx, dy = e.clientY - cy; const d = Math.hypot(dx, dy), lim = R * 0.62;
-    if (d > lim) { dx *= lim / d; dy *= lim / d; }
+    let dx = e.clientX - cx, dy = e.clientY - cy; const dd = Math.hypot(dx, dy), lim = R * 0.62;
+    if (dd > lim) { dx *= lim / dd; dy *= lim / dd; }
     pom.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px))';
     vx = +(dx / lim).toFixed(2); vy = +(-dy / lim).toFixed(2);
   };
   const manda = () => invia({ tipo: 'joy', x: vx, y: vy });
   med.addEventListener('pointerdown', e => { if (dito !== null) return; dito = e.pointerId; med.setPointerCapture(dito); med.classList.add('premuto'); muovi(e); manda(); vibra(10); clearInterval(invioTimer); invioTimer = setInterval(manda, 100); });
   med.addEventListener('pointermove', e => { if (e.pointerId === dito) muovi(e); });
-  const lascia = e => { if (e.pointerId !== dito) return; dito = null; clearInterval(invioTimer); vx = vy = 0; manda(); pom.style.transform = 'translate(-50%, -50%)'; med.classList.remove('premuto'); };
+  function lasciaJoy() { if (dito === null) return; dito = null; clearInterval(invioTimer); vx = vy = 0; manda(); pom.style.transform = 'translate(-50%, -50%)'; med.classList.remove('premuto'); }
+  const lascia = e => { if (e.pointerId === dito) lasciaJoy(); };
   med.addEventListener('pointerup', lascia); med.addEventListener('pointercancel', lascia);
-  document.addEventListener('visibilitychange', () => { if (document.hidden && dito !== null) lascia({ pointerId: dito }); else if (!document.hidden) { tieniAcceso(); invia({ tipo: 'ciao' }); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) lasciaJoy(); else { tieniAcceso(); if (pc) invia({ tipo: 'ciao' }); } });
   // schermo sempre acceso mentre si gioca
-  let blocco = null; const tieniAcceso = async () => { try { if (APP) { window.DHApp.schermoAcceso(true); return; } if ('wakeLock' in navigator && !blocco) { blocco = await navigator.wakeLock.request('screen'); blocco.addEventListener('release', () => { blocco = null; }); } } catch (e) {} };
+  let blocco = null; const tieniAcceso = async () => { try { if (APP) { nativo('schermoAcceso', true); return; } if ('wakeLock' in navigator && !blocco) { blocco = await navigator.wakeLock.request('screen'); blocco.addEventListener('release', () => { blocco = null; }); } } catch (e) {} };
   document.addEventListener('pointerdown', tieniAcceso, { once: true });
-  setInterval(statoUI, 4000);
 
-  // ---- app Android: menu delle impostazioni; nel browser su Android: invito ad aprire o scaricare l'app ----
-  if (APP) {
-    tieniAcceso();
-    $('app-btn').hidden = false;
-    const menu = $('menu-app'), apri = () => { let lib = false; try { lib = window.DHApp.batteriaLibera(); } catch (e) {} $('menu-batteria-stato').textContent = lib ? '· attivo' : '· tocca per permetterlo'; try { $('menu-versione').textContent = 'App versione ' + window.DHApp.versione(); } catch (e) {} menu.style.display = 'flex'; };
-    $('app-btn').onclick = apri;
-    $('menu-chiudi').onclick = () => { menu.style.display = 'none'; };
-    menu.addEventListener('click', e => { if (e.target === menu) menu.style.display = 'none'; });
-    $('menu-batteria').onclick = () => { try { window.DHApp.batteria(); } catch (e) {} menu.style.display = 'none'; };
-    $('menu-cambia').onclick = () => { if (confirm('Scollegare questo personaggio e usare un altro link?')) { try { window.DHApp.cambiaLink(); } catch (e) {} } };
-  } else if (/Android/i.test(navigator.userAgent)) {
-    let via = false; try { via = localStorage.getItem('dh_tel_banner_app') === '0'; } catch (e) {}
-    const gh = location.hostname.match(/^([^.]+)\.github\.io$/), repo = location.pathname.split('/').filter(Boolean)[0];
-    if (!via) {
-      $('banner-app').hidden = false;
-      $('app-apri').href = 'dhtelecomando://collega?link=' + encodeURIComponent(location.href);
-      if (gh && repo) $('app-scarica').href = 'https://github.com/' + gh[1] + '/' + repo + '/releases/latest/download/telecomando-daggerheart.apk'; else $('app-scarica').hidden = true;
-      $('app-chiudi').onclick = () => { $('banner-app').hidden = true; try { localStorage.setItem('dh_tel_banner_app', '0'); } catch (e) {} };
-    }
+  aggiornaPostaBtn();
+  if (pc) entraInGioco(); else { mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; statoUI(); }
   }
 })();
 </script>

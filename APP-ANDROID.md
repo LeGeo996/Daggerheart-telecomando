@@ -6,21 +6,26 @@ telecomando. Ogni volta che cambia `index.html` o la cartella `app-android/`, Gi
 
     https://github.com/<utente>/<repository>/releases/latest/download/telecomando-daggerheart.apk
 
-Nello schermo del GM il pulsante **📲 App Android per i giocatori** (riquadro Telecomandi) mostra il codice QR di questo indirizzo.
+Nello schermo del GM, riquadro Telecomandi: **📲 Scarica l'app** mostra il QR di questo indirizzo, **▦ QR del tavolo** il QR
+(uno solo per tutti) che i giocatori inquadrano dall'app per collegarsi; poi ognuno sceglie il suo personaggio.
 
 ## Cosa fa in più l'app rispetto alla pagina
 - resta collegata al tavolo anche con il telefono in tasca (notifica fissa "… è al tavolo", con **Lascia il tavolo**);
 - i messaggi privati del GM arrivano come **notifiche** quando l'app non è davanti;
 - vibrazione, schermo sempre acceso, icona tra le app;
-- ricorda il link del personaggio: basta toccare l'icona. Dal menu ⚙️: **Cambia personaggio** e **Resta collegato in tasca**
+- ricorda il tavolo e il personaggio: basta toccare l'icona. Dal menu ☰: **Cambia personaggio**, **Cambia tavolo** e **Resta collegato in tasca**
   (toglie il risparmio batteria per l'app, così Android non la addormenta);
 - senza rete apre la copia della pagina contenuta nell'app.
 
 ## Installazione (giocatori)
-1. Inquadra il QR **📲 App Android** del GM e scarica `telecomando-daggerheart.apk`.
+1. Inquadra il QR **📲 Scarica l'app** del GM e scarica `telecomando-daggerheart.apk`.
 2. Aprilo; la prima volta Android chiede di consentire "Installa app sconosciute" al browser: consenti e installa.
-3. Inquadra il QR del tuo personaggio: nella pagina che si apre tocca **📲 Apri nell'app**. (Oppure incolla il link nell'app.)
+3. Apri l'app e tocca **📷 Inquadra il QR del tavolo** (consenti la fotocamera), poi scegli il tuo personaggio.
 4. Consenti le notifiche quando l'app lo chiede.
+
+Nell'app: **Gioco** (PF, Stress, Speranza, Armatura, abilità, joystick), **Scheda** (✏️ Modifica: Evasione, Competenza,
+soglie e massimi), **Carte** (equipaggiamento e Volta: usa, sposta, modifica, crea, togli), **Zaino** (oro e oggetti),
+**Mappa**. Le modifiche fatte mentre il GM non è collegato restano sul telefono e arrivano appena si ricollega.
 
 Gli aggiornamenti si installano sopra la versione vecchia (stessa procedura), se l'app è firmata con la chiave del GM (sotto).
 
@@ -36,7 +41,7 @@ Gli aggiornamenti si installano sopra la versione vecchia (stessa procedura), se
 3. **Actions → App Android → Run workflow** (oppure basta caricare un `index.html` nuovo). Dopo qualche minuto l'app è nelle Releases.
 
 ## Note
-- L'app accetta solo link `https://…#s=…&p=…&k=…` e apre nel browser ogni altro sito.
+- L'app accetta solo il link del tavolo `https://…#t=…&k=…` e apre nel browser ogni altro sito.
 - Il link `https://legeo996.github.io/Daggerheart-telecomando/…` è dichiarato nell'app: in Android, *Impostazioni → App →
   Telecomando DH → Apri per impostazione predefinita → Link supportati* fa aprire quei link direttamente nell'app.
   Se pubblichi la pagina a un altro indirizzo, cambialo in `app-android/app/src/main/AndroidManifest.xml`.

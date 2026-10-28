@@ -36,6 +36,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.webkit.WebViewAssetLoader;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -157,8 +160,9 @@ public class MainActivity extends Activity {
     }
 
     // ---- link del personaggio ----
+    // il link del tavolo (uno solo per tutti): https://…/#t=<stanza>&k=<chiave>[&b=<broker>]
     static boolean valido(String l) {
-        return l != null && l.startsWith("https://") && l.contains("#") && l.contains("s=") && l.contains("p=") && l.contains("k=");
+        return l != null && l.startsWith("https://") && l.contains("#") && l.contains("t=") && l.contains("k=");
     }
 
     private String linkDaIntent(Intent i) {
@@ -166,6 +170,33 @@ public class MainActivity extends Activity {
         Uri d = i.getData();
         String l = "dhtelecomando".equals(d.getScheme()) ? d.getQueryParameter("link") : d.toString();
         return valido(l) ? l : null;
+    }
+
+    // ---- QR del tavolo inquadrato con la fotocamera dentro l'app ----
+    private void scansiona() {
+        IntentIntegrator ii = new IntentIntegrator(this);
+        ii.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
+        ii.setPrompt("Inquadra il QR del tavolo che mostra il GM");
+        ii.setBeepEnabled(false);
+        ii.setOrientationLocked(false);
+        ii.initiateScan();
+    }
+
+    @Override
+    protected void onActivityResult(int richiesta, int esito, Intent dati) {
+        IntentResult r = IntentIntegrator.parseActivityResult(richiesta, esito, dati);
+        if (r == null) { super.onActivityResult(richiesta, esito, dati); return; }
+        String testo = r.getContents();
+        if (testo == null) return;   // annullato
+        String l = testo.trim();
+        if (l.startsWith("dhtelecomando://")) l = Uri.parse(l).getQueryParameter("link");
+        if (valido(l)) {
+            prefs.edit().putString("link", l).apply();
+            Toast.makeText(this, "Tavolo collegato", Toast.LENGTH_SHORT).show();
+            carica(l);
+        } else {
+            Toast.makeText(this, "Questo non è il QR del tavolo", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void gestisciIntent(Intent i, boolean avvio) {
@@ -267,6 +298,10 @@ public class MainActivity extends Activity {
                 prefs.edit().putString("link", link).apply();
                 carica(link);
             });
+        }
+
+        @JavascriptInterface public void scansiona() {
+            runOnUiThread(MainActivity.this::scansiona);
         }
 
         @JavascriptInterface public void cambiaLink() {

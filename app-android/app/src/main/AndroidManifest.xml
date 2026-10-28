@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- fotocamera per inquadrare il QR del tavolo -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="false"
@@ -36,7 +39,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="dhtelecomando" android:host="collega" />
             </intent-filter>
-            <!-- il link del personaggio (si può impostare "Apri link supportati" nelle impostazioni dell'app) -->
+            <!-- il link del tavolo (si può impostare "Apri link supportati" nelle impostazioni dell'app) -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
