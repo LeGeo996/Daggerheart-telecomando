@@ -1,0 +1,44 @@
+# App Android del telecomando
+
+Questo repository pubblica la pagina del telefono (`index.html`, su GitHub Pages) e compila anche l'**app Android** del
+telecomando. Ogni volta che cambia `index.html` o la cartella `app-android/`, GitHub compila l'app e la mette nelle
+**Releases**. L'ultima versione si scarica sempre da:
+
+    https://github.com/<utente>/<repository>/releases/latest/download/telecomando-daggerheart.apk
+
+Nello schermo del GM il pulsante **📲 App Android per i giocatori** (riquadro Telecomandi) mostra il codice QR di questo indirizzo.
+
+## Cosa fa in più l'app rispetto alla pagina
+- resta collegata al tavolo anche con il telefono in tasca (notifica fissa "… è al tavolo", con **Lascia il tavolo**);
+- i messaggi privati del GM arrivano come **notifiche** quando l'app non è davanti;
+- vibrazione, schermo sempre acceso, icona tra le app;
+- ricorda il link del personaggio: basta toccare l'icona. Dal menu ⚙️: **Cambia personaggio** e **Resta collegato in tasca**
+  (toglie il risparmio batteria per l'app, così Android non la addormenta);
+- senza rete apre la copia della pagina contenuta nell'app.
+
+## Installazione (giocatori)
+1. Inquadra il QR **📲 App Android** del GM e scarica `telecomando-daggerheart.apk`.
+2. Aprilo; la prima volta Android chiede di consentire "Installa app sconosciute" al browser: consenti e installa.
+3. Inquadra il QR del tuo personaggio: nella pagina che si apre tocca **📲 Apri nell'app**. (Oppure incolla il link nell'app.)
+4. Consenti le notifiche quando l'app lo chiede.
+
+Gli aggiornamenti si installano sopra la versione vecchia (stessa procedura), se l'app è firmata con la chiave del GM (sotto).
+
+## Prima configurazione (GM, una volta sola)
+1. Carica in questo repository: `index.html`, `.nojekyll`, `APP-ANDROID.md`, la cartella `app-android/` e il file
+   `.github/workflows/app-android.yml` (dal sito di GitHub: **Add file → Create new file**, scrivi come nome
+   `.github/workflows/app-android.yml` e incolla il contenuto).
+2. **Settings → Secrets and variables → Actions → New repository secret**, due volte:
+   - `DH_KEYSTORE_B64`: il contenuto del file `keystore_b64.txt` (la chiave di firma dell'app);
+   - `DH_KEYSTORE_PASSWORD`: la password della chiave.
+   Senza questi due segreti l'app si compila lo stesso, ma con una chiave di prova che cambia ogni volta: per aggiornare
+   bisognerebbe disinstallare la versione vecchia. **Conserva la chiave**: se la perdi, i telefoni dovranno reinstallare l'app.
+3. **Actions → App Android → Run workflow** (oppure basta caricare un `index.html` nuovo). Dopo qualche minuto l'app è nelle Releases.
+
+## Note
+- L'app accetta solo link `https://…#s=…&p=…&k=…` e apre nel browser ogni altro sito.
+- Il link `https://legeo996.github.io/Daggerheart-telecomando/…` è dichiarato nell'app: in Android, *Impostazioni → App →
+  Telecomando DH → Apri per impostazione predefinita → Link supportati* fa aprire quei link direttamente nell'app.
+  Se pubblichi la pagina a un altro indirizzo, cambialo in `app-android/app/src/main/AndroidManifest.xml`.
+- Dal 2027 Android chiederà che anche le app installate fuori dallo store siano registrate da uno sviluppatore verificato.
+  Per un gruppo di amici basta l'account gratuito "a distribuzione limitata" della Android Developer Console (fino a 20 dispositivi).

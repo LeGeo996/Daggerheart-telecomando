@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- collegamento al broker del tavolo -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- notifiche dei messaggi del GM e notifica fissa "al tavolo" -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- resta collegato con il telefono in tasca -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Tema">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|uiMode"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- "Apri nell'app" dalla pagina del telefono: dhtelecomando://collega?link=... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="dhtelecomando" android:host="collega" />
+            </intent-filter>
+            <!-- il link del personaggio (si può impostare "Apri link supportati" nelle impostazioni dell'app) -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="legeo996.github.io" android:pathPrefix="/Daggerheart-telecomando" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".ServizioTavolo"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Mantiene il telecomando collegato al tavolo di gioco del GM per ricevere la scheda del personaggio e i messaggi" />
+        </service>
+    </application>
+</manifest>

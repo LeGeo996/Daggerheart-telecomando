@@ -1,0 +1,12 @@
+// Telecomando Daggerheart per Android: un'app che mostra la pagina del telecomando (quella pubblicata su GitHub Pages)
+// e le aggiunge ciò che una pagina web non può fare: restare collegata al tavolo con il telefono in tasca,
+// notifiche dei messaggi del GM, vibrazione, schermo acceso, link del personaggio ricordato.
+pluginManagement {
+    repositories { google(); mavenCentral(); gradlePluginPortal() }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories { google(); mavenCentral() }
+}
+rootProject.name = "TelecomandoDaggerheart"
+include ':app'
