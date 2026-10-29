@@ -29,7 +29,7 @@
   .secondario { min-height: 50px; border-radius: var(--r); border: 1px solid var(--linea); background: var(--carta); color: var(--testo); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
   .link-piccolo { background: none; border: 0; color: var(--muto); text-decoration: underline; font-size: 13px; padding: 8px; }
   .incolla { display: flex; flex-direction: column; gap: 8px; } .incolla summary { color: var(--muto); text-align: center; cursor: pointer; padding: 6px; list-style: none; }
-  textarea, input[type=text], input[type=number], select { width: 100%; background: #0d0a08; border: 1px solid var(--linea); border-radius: 10px; padding: 11px 12px; color: var(--testo); user-select: text; -webkit-user-select: text; }
+  textarea, input[type=text], input[type=number], input[type=password], select { width: 100%; background: #0d0a08; border: 1px solid var(--linea); border-radius: 10px; padding: 11px 12px; color: var(--testo); user-select: text; -webkit-user-select: text; }
   textarea:focus, input:focus, select:focus { outline: 2px solid var(--ottone-scuro); border-color: var(--ottone-scuro); }
   .scelte { display: flex; flex-direction: column; gap: 10px; }
   .scelta { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: var(--r); background: var(--carta); border: 1px solid var(--linea); text-align: left; width: 100%; }
@@ -134,6 +134,7 @@
   .codice-tavolo label { font-size: 13px; color: var(--muto); text-align: center; }
   .codice-tavolo input { text-align: center; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 14px 12px; }
   .codice-tavolo button[disabled] { opacity: 0.6; }
+  .pad.spento { opacity: .35; filter: grayscale(.7); } body.fuori .abilita button.spenta, .abilita select:disabled { opacity: .45; }
   .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #2a2016; border: 1px solid var(--ottone-scuro); color: var(--testo); padding: 9px 14px; border-radius: 99px; font-size: 13px; z-index: 70; max-width: 90vw; text-align: center; box-shadow: 0 8px 24px #000; }
   @media (orientation: landscape) and (max-height: 520px) {
     #pag-gioco { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; } #pag-gioco .pad { grid-row: 1 / span 4; grid-column: 2; position: sticky; top: 0; } .medaglione { width: min(42vw, calc(100vh - 150px)); }
@@ -192,7 +193,7 @@
       <div class="pad" id="pad"><div class="medaglione" id="medaglione" role="application" aria-label="Joystick: trascina per muovere il personaggio">
         <div class="rosa" aria-hidden="true"><span class="n">avanti</span><span class="s">indietro</span><span class="o">sinistra</span><span class="e">destra</span></div>
         <div class="pomello" id="pomello"></div></div></div>
-      <div class="aiuto">Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.</div>
+      <div class="aiuto" id="aiuto">Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.</div>
     </div>
     <div class="pagina" id="pag-scheda" hidden></div>
     <div class="pagina" id="pag-carte" hidden></div>
@@ -340,16 +341,40 @@
       const hex = Array.from(bit, x => x.toString(16).padStart(2, '0')).join('');
       return { codice: c, stanza: 'c' + hex.slice(0, 15), chiave: hex.slice(16, 48) };
     }
+    // Codice del personaggio (es. 0001): per prendere un PG sul telefono serve anche il suo codice. Il GM pubblica solo
+    // un'impronta del codice (PBKDF2, legata al tavolo e al PG), così il telefono lo controlla anche senza collegamento.
+    // Con 4 cifre è una serratura contro gli sbagli e i dispetti, non una cassaforte.
+    const telNormalizzaPin = p => String(p == null ? '' : p).replace(/\D/g, '').slice(0, 8);
+    async function telImprontaPin(stanza, pc, pin) {
+      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(telNormalizzaPin(pin)), 'PBKDF2', false, ['deriveBits']);
+      const bit = new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode('daggerheart-vtt:pg:v1:' + stanza + ':' + pc), iterations: 20000 }, base, 128));
+      return Array.from(bit, x => x.toString(16).padStart(2, '0')).join('');
+    }
 
 (() => {
   const BROKER_PREDEFINITO = 'wss://broker.hivemq.com:8884/mqtt';
   const $ = id => document.getElementById(id);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-  const ls = { get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }, via(k) { try { localStorage.removeItem(k); } catch (e) {} } };
-  const mostra = id => document.querySelectorAll('.schermo').forEach(s => { s.hidden = s.id !== id; });
-  let toastT = null; const avvisa = t => { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600); };
   // App Android: la pagina gira dentro l'app, che le offre window.DHApp (servizio "al tavolo", notifiche, vibrazione, scanner)
   const APP = (() => { try { return !!(window.DHApp && window.DHApp.nativo()); } catch (e) { return false; } })();
+  // nell'app i dati (personaggio, scheda, modifiche in coda) stanno nella memoria dell'app: li vede sia la pagina
+  // pubblicata sia la copia contenuta nell'app, che si apre quando manca la rete. I messaggi del GM (con le immagini) no.
+  const MEM_APP = (() => { try { return APP && typeof window.DHApp.leggi === 'function' && typeof window.DHApp.scrivi === 'function'; } catch (e) { return false; } })();
+  const inApp = k => MEM_APP && !/^dh_tel_posta/.test(k);
+  const ls = {
+    get(k, d) {
+      try {
+        if (inApp(k)) { const v = window.DHApp.leggi(k); if (v !== null && v !== undefined && v !== '') return JSON.parse(v); }
+        const v = localStorage.getItem(k); if (v === null) return d;
+        if (inApp(k)) window.DHApp.scrivi(k, v);   // dato di prima: passa nella memoria dell'app
+        return JSON.parse(v);
+      } catch (e) { return d; }
+    },
+    set(k, v) { const t = JSON.stringify(v); try { if (inApp(k)) window.DHApp.scrivi(k, t); } catch (e) {} try { localStorage.setItem(k, t); } catch (e) {} },
+    via(k) { try { if (inApp(k)) window.DHApp.togli(k); } catch (e) {} try { localStorage.removeItem(k); } catch (e) {} }
+  };
+  const mostra = id => document.querySelectorAll('.schermo').forEach(s => { s.hidden = s.id !== id; });
+  let toastT = null; const avvisa = t => { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600); };
   const nativo = (f, ...a) => { try { if (APP && typeof window.DHApp[f] === 'function') { const r = window.DHApp[f](...a); return r === undefined ? true : r; } } catch (e) {} return undefined; };
   const vibra = ms => { try { if (APP) nativo('vibra', Array.isArray(ms) ? ms.reduce((a, b) => a + b, 0) : ms); else if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (e) {} };
 
@@ -412,24 +437,33 @@
   let DEV = ls.get('dh_dev', null); if (!DEV || !/^[a-z0-9]{6,32}$/.test(DEV)) { DEV = Array.from(crypto.getRandomValues(new Uint8Array(10)), x => 'abcdefghijkmnpqrstuvwxyz23456789'[x % 32]).join(''); ls.set('dh_dev', DEV); }
   let coppia = ls.get('dh_dev_chiavi', null);
   const pronte = (async () => { if (!coppia || !coppia.priv) { coppia = await telGeneraCoppia(); ls.set('dh_dev_chiavi', coppia); } return coppia; })();
-  const K_PG = 'dh_pg_' + stanza, K_CODA = 'dh_coda_' + stanza;
-  let pc = ls.get(K_PG, null), tavolo = null, scheda = null, gmOnline = null, gmPub = null, msgGrezzo = null, mappa = null, servizioAvviato = false;
+  const K_PG = 'dh_pg_' + stanza, K_CODA = 'dh_coda_' + stanza, K_TAV = 'dh_tavolo_' + stanza, K_PIN = p => 'dh_pin_' + stanza + '_' + p;
+  let pc = ls.get(K_PG, null), tavolo = ls.get(K_TAV, null), presentatoAt = 0, scheda = null, gmOnline = null, gmPub = null, msgGrezzo = null, mappa = null, servizioAvviato = false;
   let seq = Date.now() * 1000, coda = ls.get(K_CODA, []);
   if (pc) scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null);
 
   const m = new MqttMini(broker, { clientId: 'dhpg-' + DEV.slice(0, 8) + '-' + Math.random().toString(36).slice(2, 6), keepalive: APP ? 55 : 20, will: { topic: base + '/presenza/' + DEV, payload: JSON.stringify({ online: false }), retain: true } });
-  const invia = async (c, perPc) => {
+  // i comandi partono uno alla volta e nell'ordine (il GM scarta un comando con un numero più basso dell'ultimo)
+  let filaInvio = Promise.resolve(true);
+  const invia = (c, perPc) => { filaInvio = filaInvio.catch(() => false).then(async () => {
     if (!m.collegato) return false;
     const p = perPc || pc; if (!p) return false;
     seq = Math.max(seq + 1, Date.now() * 1000); const s = seq;
     const sig = await firmaTelecomando(chiave, DEV + '|' + p + '|' + s + '|' + JSON.stringify(c));
     m.publish(base + '/cmd', JSON.stringify({ dev: DEV, pc: p, seq: s, c, sig })); return true;
-  };
+  }); return filaInvio; };
+  // il telefono dice al GM quale PG ha (con il codice del personaggio): all'avvio, quando torna la rete e quando il GM si collega
+  async function presentati() {
+    if (!pc || !m.collegato) return false;
+    await pronte; presentatoAt = Date.now();
+    return invia({ tipo: 'scegli', pub: coppia.pub, pin: ls.get(K_PIN(pc), '') || '' });
+  }
+  const alTavolo = () => !!(m.collegato && gmOnline);
   // modifiche alla scheda: partono subito se il GM c'è, altrimenti aspettano in coda (anche se chiudi l'app)
   async function modifica(c) {
     applicaLocale(c); disegna();
-    if (m.collegato && gmOnline && pc && !coda.length) { await invia(c); }
-    else { coda.push({ c, pc }); ls.set(K_CODA, coda); mostraCoda(); if (!(m.collegato && gmOnline)) avvisa('⏳ Salvato: arriverà al GM appena è collegato'); svuotaCoda(); }
+    if (alTavolo() && pc && !coda.length) { await invia(c); }
+    else { coda.push({ c, pc }); ls.set(K_CODA, coda); mostraCoda(); if (!alTavolo()) avvisa('💾 Salvato sul telefono: arriverà al GM appena è collegato'); svuotaCoda(); }
   }
   let svuotando = false;
   async function svuotaCoda() {
@@ -438,7 +472,13 @@
     try { while (coda.length && m.collegato && gmOnline) { const v = coda[0]; if (v.pc === pc) { await invia(v.c); n++; } coda.shift(); ls.set(K_CODA, coda); await new Promise(r => setTimeout(r, 60)); } if (n > 1) avvisa('✅ Modifiche consegnate al GM'); }
     finally { svuotando = false; mostraCoda(); }
   }
-  function mostraCoda() { const n = coda.filter(v => v.pc === pc).length; $('coda').hidden = !n; $('coda-t').textContent = n + (n === 1 ? ' modifica in attesa' : ' modifiche in attesa') + ' del GM: partono appena si collega.'; }
+  function mostraCoda() {
+    const n = coda.filter(v => v.pc === pc).length, fuori = !alTavolo();
+    $('coda').hidden = !n && !fuori;
+    $('coda').firstChild.textContent = fuori ? '📴 ' : '⏳ ';
+    $('coda-t').textContent = (fuori ? (m.collegato ? 'Il GM non ha attivato i telecomandi' : 'Senza collegamento') + ': puoi cambiare la scheda, il joystick e le abilità aspettano il GM.' : '')
+      + (n ? (fuori ? ' ' : '') + n + (n === 1 ? ' modifica salvata' : ' modifiche salvate') + (fuori ? ', partono appena il GM si collega.' : ': le sto mandando al GM…') : '');
+  }
   // applica subito sul telefono le modifiche (il GM poi conferma con la scheda aggiornata)
   function applicaLocale(c) {
     const d = scheda; if (!d) return;
@@ -456,6 +496,8 @@
     else if (c.tipo === 'carta-togli') d.carte = d.carte.filter(x => x.id !== c.id);
     else if (c.tipo === 'ogg-salva') { const o = c.ogg, e = o.id && d.zaino.ogg.find(x => x.id === o.id); if (e) Object.assign(e, o); else d.zaino.ogg.push(Object.assign({}, o, { id: 'nuovo' + Date.now() })); }
     else if (c.tipo === 'ogg-togli') d.zaino.ogg = d.zaino.ogg.filter(x => x.id !== c.id);
+    else if (c.tipo === 'testo') { const k = { classe: 'classe', attacchi: 'attacchi', tratti: 'tratti' }[c.campo]; if (k) d[k] = c.v; }
+    if (pc) ls.set('dh_scheda_' + stanza + '_' + pc, d);   // la scheda sul telefono resta aggiornata anche senza collegamento
   }
 
   // ---------- collegamento ----------
@@ -463,22 +505,31 @@
     const el = $('stato'), t = $('stato-t');
     let cls = 'ok', txt = 'Al tavolo';
     if (!m.collegato) { cls = 'ko'; txt = navigator.onLine === false ? 'Senza rete' : 'Riconnessione…'; }
-    else if (gmOnline === false) { cls = 'attesa'; txt = 'GM non collegato'; }
+    else if (!gmOnline) { cls = 'attesa'; txt = 'GM non collegato'; }
     else if (!scheda) { cls = 'attesa'; txt = 'In attesa del GM'; }
     el.className = 'stato ' + cls; t.textContent = txt;
-    if (!$('s-scelta').hidden) $('scelta-stato').textContent = !m.collegato ? 'Collegamento al tavolo…' : !tavolo ? 'In attesa del GM: deve attivare i telecomandi.' : gmOnline === false ? 'Il GM non è collegato: puoi scegliere lo stesso.' : 'Tocca il tuo personaggio.';
+    if (!$('s-scelta').hidden) $('scelta-stato').textContent = !tavolo ? (m.collegato ? 'In attesa del GM: per la prima volta deve attivare i telecomandi.' : 'Collegamento al tavolo… (la prima volta serve la rete)')
+      : !alTavolo() ? 'Telecomandi non attivi: puoi prendere il tuo personaggio e cambiare la scheda.' : 'Tocca il tuo personaggio.';
+    const fuori = !alTavolo(), pad = $('pad');
+    if (pad) { pad.classList.toggle('spento', fuori); $('aiuto').textContent = fuori ? 'Il joystick funziona quando il GM attiva i telecomandi.' : 'Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.'; }
+    const cambiato = document.body.classList.contains('fuori') !== fuori; document.body.classList.toggle('fuori', fuori);
+    if (!$('s-gioco').hidden) { mostraCoda(); disegnaRiflettore(); if (cambiato) disegna(); }
+    if (fuori) { try { lasciaJoy(); } catch (e) { /* joystick non ancora pronto */ } }
   };
   const iscriviPG = p => { m.subscribe(base + '/pg/' + p + '/stato'); m.subscribe(base + '/pg/' + p + '/msg'); };
   m.on('stato', statoUI);
   m.on('open', async () => {
     m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc: pc || '' }), { retain: true });
-    if (pc) { await pronte; invia({ tipo: 'scegli', pub: coppia.pub }); }
-    statoUI(); svuotaCoda();
+    statoUI(); await presentati(); svuotaCoda();
   });
   m.on('message', (topic, testo) => {
     let d = null; try { d = JSON.parse(testo); } catch (e) { return; }
-    if (topic === base + '/gm') { gmOnline = !!(d && d.online); if (d && d.pub) { gmPub = d.pub; if (msgGrezzo) riceviPosta(msgGrezzo); } statoUI(); if (gmOnline) svuotaCoda(); return; }
-    if (topic === base + '/tavolo') { tavolo = d; disegnaScelta(); controllaProprieta(); disegnaRiflettore(); return; }
+    if (topic === base + '/gm') {
+      const prima = gmOnline; gmOnline = !!(d && d.online); if (d && d.pub) { gmPub = d.pub; if (msgGrezzo) riceviPosta(msgGrezzo); } statoUI();
+      if (gmOnline && !prima) presentati().then(() => svuotaCoda());   // il GM è appena arrivato: prima il PG, poi le modifiche salvate
+      return;
+    }
+    if (topic === base + '/tavolo') { tavolo = d; ls.set(K_TAV, d); disegnaScelta(); controllaProprieta(); disegnaRiflettore(); return; }
     if (topic === base + '/mappa') { mappa = d; disegnaMappa(); return; }
     if (pc && topic === base + '/pg/' + pc + '/stato') {
       scheda = d; coda.filter(v => v.pc === pc).forEach(v => applicaLocale(v.c));   // le modifiche in coda restano visibili
@@ -499,7 +550,8 @@
     if (!pc || !tavolo) return;
     const t = (tavolo.pg || []).find(x => x.id === pc);
     if (!t) { lasciaPG(false); return; }
-    if (t.chi && t.chi !== DEV) { avvisa('🔁 ' + t.nome + ' è stato preso da un altro telefono'); lasciaPG(false); }
+    if ((t.pin || '') !== (ls.get(K_PIN(pc), '') || '') && t.pin) { avvisa('🔢 Il GM ha cambiato il codice di ' + t.nome + ': scrivilo di nuovo'); lasciaPG(false); return; }
+    if (t.chi && t.chi !== DEV && Date.now() - presentatoAt > 6000) { avvisa('🔁 ' + t.nome + ' è stato preso da un altro telefono'); lasciaPG(false); }
   }
   function disegnaScelta() {
     const box = $('scelte'); if (!tavolo) return;
@@ -512,13 +564,39 @@
   async function scegli(id) {
     const t = (tavolo.pg || []).find(x => x.id === id); if (!t) return;
     if (t.occupato && t.chi !== DEV && !confirm(t.nome + ' è già stato scelto da un altro telefono' + (t.online ? ' (collegato adesso)' : '') + '. Prenderlo comunque?')) return;
+    let impronta = '';
+    if (t.pin) { impronta = await chiediPin(t); if (!impronta) return; }
+    ls.set(K_PIN(id), impronta);
     pc = id; ls.set(K_PG, pc); scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null); msgGrezzo = null; posta = ls.get(chPosta(), []);
-    iscriviPG(pc); await pronte; await invia({ tipo: 'scegli', pub: coppia.pub });
-    m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc }), { retain: true });
+    if (m.collegato) { iscriviPG(pc); await presentati(); m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc }), { retain: true }); }
+    else iscriviPG(pc);
     vibra(20); entraInGioco();
+  }
+  // codice del personaggio: si controlla sul telefono (vale anche senza collegamento) e il GM lo ricontrolla
+  let sbagli = 0, fermoFino = 0;
+  function chiediPin(t) {
+    return new Promise(fine => {
+      apriFoglio('<h2>🔢 Codice di ' + esc(t.nome) + '</h2><p style="margin:0;color:var(--muto);font-size:14px">Scrivi il codice del tuo personaggio: te lo dice il GM.</p>'
+        + '<form class="codice-tavolo" id="pin-form"><input id="pin-in" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="••••" aria-label="Codice del personaggio">'
+        + '<button type="submit" class="grande">Entra</button><button type="button" class="secondario" id="pin-annulla">Annulla</button></form>');
+      const inp = $('pin-in'); setTimeout(() => inp.focus(), 50);
+      let chiuso = false; const esci = v => { if (chiuso) return; chiuso = true; chiudiFoglio(); fine(v); };
+      $('pin-annulla').onclick = () => esci('');
+      $('velo').onclick = e => { if (e.target === $('velo')) esci(''); };
+      $('pin-form').onsubmit = async e => {
+        e.preventDefault();
+        if (Date.now() < fermoFino) { avvisa('Troppi tentativi: riprova tra ' + Math.ceil((fermoFino - Date.now()) / 1000) + ' s'); return; }
+        const pin = telNormalizzaPin(inp.value); if (pin.length < 4) { avvisa('Il codice ha almeno 4 cifre'); return; }
+        const h = await telImprontaPin(stanza, t.id, pin);
+        if (h === t.pin) { sbagli = 0; esci(h); return; }
+        sbagli++; if (sbagli >= 5) { fermoFino = Date.now() + 30000; sbagli = 0; }
+        inp.value = ''; vibra([40, 40, 40]); avvisa('Codice sbagliato');
+      };
+    });
   }
   function lasciaPG(avvisaGM) {
     if (avvisaGM && pc) invia({ tipo: 'lascia' });
+    if (pc) ls.via(K_PIN(pc));
     pc = null; ls.via(K_PG); scheda = null; servizioAvviato = false; nativo('servizio', '', false); chiudiFoglio();
     mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta();
   }
@@ -530,7 +608,7 @@
   function disegnaRiflettore() {
     const el = $('rifl'); if (!el) return;
     const R = tavolo && tavolo.rifl;
-    if (!pc || !R) { el.hidden = true; return; }
+    if (!pc || !R || !alTavolo()) { el.hidden = true; return; }
     const coda = Array.isArray(R.coda) ? R.coda : [], mio = R.su === pc, posto = coda.indexOf(pc);
     const nome = id => id === 'gm' ? 'il GM' : (((tavolo && tavolo.pg) || []).find(x => x.id === id) || {}).nome || '—';
     el.hidden = false; el.classList.toggle('mio', mio);
@@ -539,7 +617,7 @@
       + '<button type="button" id="rifl-btn" class="' + (posto >= 0 ? 'in-coda' : '') + '" aria-label="' + (posto >= 0 ? 'Annulla la richiesta' : 'Chiedi la scena al GM') + '">' + (posto >= 0 ? '✋ ' + (posto + 1) + '° · Annulla' : '✋ Prendi la scena') + '</button>';
     const b = $('rifl-btn');
     if (b) b.onclick = async () => {
-      if (!m.collegato || !gmOnline) { avvisa('Il GM non è collegato: riprova tra poco'); return; }
+      if (!alTavolo()) { avvisa('Il GM non è collegato: riprova tra poco'); return; }
       await invia({ tipo: 'riflettore', chiedi: posto < 0 }); vibra(15);
       avvisa(posto < 0 ? '✋ Hai chiesto la scena al GM' : 'Richiesta annullata');
     };
@@ -567,7 +645,13 @@
   let modificaScheda = null; const cartaAperta = {};
   function disegna() {
     const d = scheda;
-    if (!d) { $('nome').textContent = ((tavolo && (tavolo.pg || []).find(x => x.id === pc)) || {}).nome || 'Personaggio'; return; }
+    if (!d) {
+      const t = (tavolo && (tavolo.pg || []).find(x => x.id === pc)) || {};
+      $('nome').textContent = t.nome || 'Personaggio'; $('classe').textContent = t.classe || '';
+      const v = '<div class="vuoto">' + (alTavolo() ? 'Arriva la scheda dal GM…' : 'La scheda di ' + esc(t.nome || 'questo personaggio') + ' arriva la prima volta che il GM attiva i telecomandi: da lì in poi resta sul telefono e la puoi cambiare anche senza collegamento.') + '</div>';
+      ['pag-scheda', 'pag-carte', 'pag-zaino'].forEach(id => { $(id).innerHTML = v; }); $('risorse').innerHTML = v; $('abilita').innerHTML = ''; $('condizioni').innerHTML = '';
+      return;
+    }
     const col = /^#[0-9a-f]{3,8}$/i.test(d.colore) ? d.colore : '#d4af37';
     document.documentElement.style.setProperty('--pg', col); $('h-gemma').style.setProperty('--c', col);
     $('nome').textContent = d.nome || 'Personaggio'; $('classe').textContent = d.classe || ''; document.title = (d.nome || 'PG') + ' · telecomando';
@@ -583,12 +667,14 @@
       if (a.scelta) {
         const lab = document.createElement('label'); lab.textContent = a.label;
         const sel = document.createElement('select'); a.scelta.forEach(o => { const op = document.createElement('option'); op.value = o.id; op.textContent = o.label; if (o.id === a.val) op.selected = true; sel.appendChild(op); });
-        sel.onchange = () => { if (!gmOnline) { avvisa('Il GM non è collegato'); sel.value = a.val; return; } invia({ tipo: 'abilita', id: a.id, val: sel.value }); vibra(15); };
+        sel.disabled = !alTavolo();
+        sel.onchange = () => { if (!alTavolo()) { avvisa('Le abilità funzionano quando il GM attiva i telecomandi'); sel.value = a.val; return; } invia({ tipo: 'abilita', id: a.id, val: sel.value }); vibra(15); };
         lab.appendChild(sel); ab.appendChild(lab);
         if (a.info) { const sm = document.createElement('small'); sm.textContent = a.info; ab.appendChild(sm); }
       } else {
         const b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.attivo) b.className = 'attivo';
-        b.onclick = () => { if (!gmOnline) { avvisa('Il GM non è collegato'); return; } invia({ tipo: 'abilita', id: a.id }); vibra(20); };
+        if (!alTavolo()) b.classList.add('spenta');
+        b.onclick = () => { if (!alTavolo()) { avvisa('Le abilità funzionano quando il GM attiva i telecomandi'); return; } invia({ tipo: 'abilita', id: a.id }); vibra(20); };
         ab.appendChild(b);
       }
     });
@@ -603,15 +689,26 @@
     h += '<div class="valori">' + CAMPI.map(([k, n]) => { const v = ed ? ed[k] : mx[k];
       return '<div class="valore' + (ed && ed[k] !== mx[k] ? ' cambiato' : '') + '"><span>' + n + '</span>' + (ed ? '<div class="passo"><button type="button" data-k="' + k + '" data-d="-1" aria-label="' + n + ' meno">−</button><strong id="v-' + k + '">' + esc(v) + '</strong><button type="button" data-k="' + k + '" data-d="1" aria-label="' + n + ' più">+</button></div>' : '<strong id="v-' + k + '">' + esc(v == null ? '–' : v) + '</strong>') + '</div>'; }).join('') + '</div>';
     if (ed) h += '<div class="riga-azioni"><button type="button" class="secondario" id="sch-annulla">Annulla</button><button type="button" class="grande" id="sch-salva">Salva</button></div>';
-    if (d.attacchi) h += '<div class="titoletto">Attacchi</div><div class="riquadro testo-lungo">' + esc(d.attacchi) + '</div>';
-    if (d.tratti) h += '<div class="titoletto">Tratti</div><div class="riquadro testo-lungo">' + esc(d.tratti) + '</div>';
+    const matita = campo => perm.scheda ? '<span class="poi"><button type="button" class="secondario" data-testo="' + campo + '" style="min-height:34px;padding:0 12px" aria-label="Modifica">✏️</button></span>' : '';
+    h += '<div class="titoletto">Classe e livello' + matita('classe') + '</div><div class="riquadro testo-lungo">' + (esc(d.classe) || '<span style="color:var(--muto)">—</span>') + '</div>';
+    if (d.attacchi || perm.scheda) h += '<div class="titoletto">Attacchi' + matita('attacchi') + '</div><div class="riquadro testo-lungo">' + (esc(d.attacchi) || '<span style="color:var(--muto)">—</span>') + '</div>';
+    if (d.tratti || perm.scheda) h += '<div class="titoletto">Tratti' + matita('tratti') + '</div><div class="riquadro testo-lungo">' + (esc(d.tratti) || '<span style="color:var(--muto)">—</span>') + '</div>';
     $('pag-scheda').innerHTML = h;
+    $('pag-scheda').querySelectorAll('[data-testo]').forEach(x => x.onclick = () => editorTesto(x.dataset.testo, d));
     const b = $('sch-modifica'); if (b) b.onclick = () => { modificaScheda = Object.assign({}, mx); disegna(); };
     if (ed) {
       $('pag-scheda').querySelectorAll('[data-k]').forEach(x => x.onclick = () => { const k = x.dataset.k, L = LIMITI[k]; ed[k] = Math.max(L[0], Math.min(L[1], (ed[k] || 0) + (+x.dataset.d))); disegna(); });
       $('sch-annulla').onclick = () => { modificaScheda = null; disegna(); };
       $('sch-salva').onclick = async () => { const camb = CAMPI.map(c => c[0]).filter(k => ed[k] !== mx[k]); modificaScheda = null; for (const k of camb) await modifica({ tipo: 'max', campo: k, v: ed[k] }); if (camb.length) avvisa('✅ Scheda aggiornata'); disegna(); };
     }
+  }
+  const TESTI = { classe: ['Classe e livello', 80, 1], attacchi: ['Attacchi', 400, 3], tratti: ['Tratti', 600, 5] };
+  function editorTesto(campo, d) {
+    const T = TESTI[campo]; if (!T) return;
+    apriFoglio('<h2>✏️ ' + T[0] + '</h2><label>' + T[0] + (T[2] > 1 ? '<textarea id="et-v" rows="' + T[2] + '" maxlength="' + T[1] + '">' + esc(d[campo] || '') + '</textarea>' : '<input type="text" id="et-v" maxlength="' + T[1] + '" value="' + esc(d[campo] || '') + '">') + '</label>'
+      + '<div class="riga-azioni"><button type="button" class="secondario" id="et-annulla">Annulla</button><button type="button" class="grande" id="et-salva">Salva</button></div>');
+    $('et-annulla').onclick = chiudiFoglio;
+    $('et-salva').onclick = () => { const v = $('et-v').value.trim(); chiudiFoglio(); if (v !== (d[campo] || '')) { modifica({ tipo: 'testo', campo, v }); avvisa('✅ Scheda aggiornata'); } };
   }
   const USI = { sempre: 'Sempre', riposo: 'Una volta per riposo', sessione: 'Una volta per sessione' };
   function disegnaCarte(d, perm) {
@@ -688,8 +785,8 @@
   }
   // fogli dal basso
   function apriFoglio(html) { $('foglio').innerHTML = html; $('velo').hidden = false; lasciaJoy(); }
-  function chiudiFoglio() { $('velo').hidden = true; $('foglio').innerHTML = ''; }
-  $('velo').addEventListener('click', e => { if (e.target === $('velo')) chiudiFoglio(); });
+  function chiudiFoglio() { $('velo').hidden = true; $('foglio').innerHTML = ''; $('velo').onclick = null; }
+  $('velo').addEventListener('click', e => { if (e.target === $('velo') && !$('velo').onclick) chiudiFoglio(); });
 
   // ---------- menu ----------
   $('menu-btn').onclick = () => {
@@ -766,19 +863,19 @@
     pom.style.transform = 'translate(calc(-50% + ' + dx + 'px), calc(-50% + ' + dy + 'px))';
     vx = +(dx / lim).toFixed(2); vy = +(-dy / lim).toFixed(2);
   };
-  const manda = () => invia({ tipo: 'joy', x: vx, y: vy });
-  med.addEventListener('pointerdown', e => { if (dito !== null) return; dito = e.pointerId; med.setPointerCapture(dito); med.classList.add('premuto'); muovi(e); manda(); vibra(10); clearInterval(invioTimer); invioTimer = setInterval(manda, 100); });
+  const manda = () => { if (alTavolo()) invia({ tipo: 'joy', x: vx, y: vy }); };
+  med.addEventListener('pointerdown', e => { if (!alTavolo()) { avvisa('Il joystick funziona quando il GM attiva i telecomandi'); return; } if (dito !== null) return; dito = e.pointerId; med.setPointerCapture(dito); med.classList.add('premuto'); muovi(e); manda(); vibra(10); clearInterval(invioTimer); invioTimer = setInterval(manda, 100); });
   med.addEventListener('pointermove', e => { if (e.pointerId === dito) muovi(e); });
   function lasciaJoy() { if (dito === null) return; dito = null; clearInterval(invioTimer); vx = vy = 0; manda(); pom.style.transform = 'translate(-50%, -50%)'; med.classList.remove('premuto'); }
   const lascia = e => { if (e.pointerId === dito) lasciaJoy(); };
   med.addEventListener('pointerup', lascia); med.addEventListener('pointercancel', lascia);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) lasciaJoy(); else { tieniAcceso(); if (pc) invia({ tipo: 'ciao' }); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) lasciaJoy(); else { tieniAcceso(); if (pc && alTavolo()) invia({ tipo: 'ciao' }); } });
   // schermo sempre acceso mentre si gioca
   let blocco = null; const tieniAcceso = async () => { try { if (APP) { nativo('schermoAcceso', true); return; } if ('wakeLock' in navigator && !blocco) { blocco = await navigator.wakeLock.request('screen'); blocco.addEventListener('release', () => { blocco = null; }); } } catch (e) {} };
   document.addEventListener('pointerdown', tieniAcceso, { once: true });
 
   aggiornaPostaBtn();
-  if (pc) entraInGioco(); else { mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; statoUI(); }
+  if (pc) entraInGioco(); else { mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta(); statoUI(); }
   }
 })();
 </script>

@@ -281,6 +281,8 @@ public class MainActivity extends Activity {
         try { startForegroundService(i); } catch (Exception e) { /* l'app è in secondo piano: si riprova alla prossima apertura */ }
     }
 
+    private SharedPreferences dati() { return getSharedPreferences("dati_pagina", MODE_PRIVATE); }
+
     private void fermaServizio() {
         stopService(new Intent(this, ServizioTavolo.class));
     }
@@ -290,6 +292,11 @@ public class MainActivity extends Activity {
         @JavascriptInterface public boolean nativo() { return true; }
         @JavascriptInterface public String versione() { return MainActivity.this.versione(); }
         @JavascriptInterface public String link() { return prefs.getString("link", ""); }
+
+        // memoria della pagina: la stessa per la pagina pubblicata e per la copia contenuta nell'app (senza rete)
+        @JavascriptInterface public String leggi(String k) { return k == null ? null : dati().getString(k, null); }
+        @JavascriptInterface public void scrivi(String k, String v) { if (k != null) dati().edit().putString(k, v).apply(); }
+        @JavascriptInterface public void togli(String k) { if (k != null) dati().edit().remove(k).apply(); }
 
         @JavascriptInterface public void salvaLink(String l) {
             final String link = l == null ? "" : l.trim();
