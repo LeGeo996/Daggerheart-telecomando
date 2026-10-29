@@ -130,6 +130,10 @@
   .rifl.mio { background: linear-gradient(90deg, #4a3810, #2a1f0c); border-color: #fde047; color: #fff3c4; box-shadow: 0 0 16px rgba(253, 224, 71, 0.35); animation: rifl-pulsa 1.6s ease-in-out infinite; }
   .rifl.mio .rifl-t b { color: #fde047; font-size: 15px; }
   @keyframes rifl-pulsa { 50% { box-shadow: 0 0 26px rgba(253, 224, 71, 0.6); } }
+  .codice-tavolo { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .codice-tavolo label { font-size: 13px; color: var(--muto); text-align: center; }
+  .codice-tavolo input { text-align: center; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 14px 12px; }
+  .codice-tavolo button[disabled] { opacity: 0.6; }
   .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #2a2016; border: 1px solid var(--ottone-scuro); color: var(--testo); padding: 9px 14px; border-radius: 99px; font-size: 13px; z-index: 70; max-width: 90vw; text-align: center; box-shadow: 0 8px 24px #000; }
   @media (orientation: landscape) and (max-height: 520px) {
     #pag-gioco { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; } #pag-gioco .pad { grid-row: 1 / span 4; grid-column: 2; position: sticky; top: 0; } .medaglione { width: min(42vw, calc(100vh - 150px)); }
@@ -146,13 +150,18 @@
   <a class="grande" id="benv-apri" href="#" hidden>📲 Apri nell’app</a>
   <a class="secondario" id="benv-scarica" href="#" target="_blank" rel="noopener" hidden>⬇️ Scarica l’app Android</a>
   <button type="button" class="link-piccolo" id="benv-browser" hidden>Continua nel browser</button>
+  <form class="codice-tavolo" id="benv-codice" hidden><label for="benv-codice-in">oppure scrivi il codice del tavolo e gioca nel browser</label>
+    <input id="benv-codice-in" type="text" placeholder="CODICE DEL TAVOLO" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32">
+    <button type="submit" class="secondario">Entra</button></form>
 </section>
 <!-- app: collegarsi al tavolo -->
 <section class="schermo ingresso" id="s-collega" hidden>
   <div class="stemma"><i></i></div>
   <h1>Collegati al tavolo</h1>
-  <p>Inquadra il QR del tavolo che mostra il GM: è lo stesso per tutti i giocatori.</p>
-  <button type="button" class="grande" id="collega-scansiona">📷 Inquadra il QR del tavolo</button>
+  <p>Scrivi il codice del tavolo che ti dice il GM: è lo stesso per tutti i giocatori.</p>
+  <form class="codice-tavolo" id="collega-codice"><input id="collega-codice-in" type="text" placeholder="CODICE DEL TAVOLO" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="32" aria-label="Codice del tavolo">
+    <button type="submit" class="grande">Entra al tavolo</button></form>
+  <button type="button" class="secondario" id="collega-scansiona">📷 oppure inquadra il QR del tavolo</button>
   <details class="incolla"><summary>oppure incolla il link del tavolo</summary>
     <textarea id="collega-link" rows="3" placeholder="https://…#t=…&amp;k=…" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
     <button type="button" class="secondario" id="collega-usa">Collega</button></details>
@@ -318,6 +327,19 @@
       const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: _deb64(d.iv) }, chiave, _deb64(d.ct));
       return new TextDecoder().decode(pt);
     }
+    // Codice del tavolo (es. DAGGERHEARTJOJO): al posto del QR, il giocatore scrive il codice che gli dice il GM. Dal codice
+    // nascono sia la stanza sul broker sia la chiave che firma i comandi (PBKDF2-SHA256, 150.000 giri): sul broker il
+    // codice non passa mai, e indovinarlo per tentativi richiede molto tempo per ogni prova. Maiuscole, spazi e trattini
+    // non contano ("daggerheart jojo" = "DAGGERHEARTJOJO").
+    const telNormalizzaCodice = c => String(c == null ? '' : c).toUpperCase().normalize('NFD').replace(/[^A-Z0-9]/g, '');
+    async function telDaCodice(codice) {
+      const c = telNormalizzaCodice(codice);
+      if (c.length < 6) throw new Error('codice troppo corto');
+      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(c), 'PBKDF2', false, ['deriveBits']);
+      const bit = new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode('daggerheart-vtt:tavolo:v1'), iterations: 150000 }, base, 384));
+      const hex = Array.from(bit, x => x.toString(16).padStart(2, '0')).join('');
+      return { codice: c, stanza: 'c' + hex.slice(0, 15), chiave: hex.slice(16, 48) };
+    }
 
 (() => {
   const BROKER_PREDEFINITO = 'wss://broker.hivemq.com:8884/mqtt';
@@ -347,17 +369,42 @@
     if (tavoloOk && android) { $('benv-apri').hidden = false; $('benv-apri').href = 'dhtelecomando://collega?link=' + encodeURIComponent(location.href); $('benv-testo').textContent = 'Hai già l’app? Aprila con il tavolo pronto. Altrimenti scaricala, aprila e inquadra di nuovo il QR del tavolo.'; }
     if (urlApp) { $('benv-scarica').hidden = false; $('benv-scarica').href = urlApp; }
     if (tavoloOk) { $('benv-browser').hidden = false; $('benv-browser').onclick = () => { try { sessionStorage.setItem('dh_browser', '1'); } catch (e) {} avvia(); }; }
-    else $('benv-testo').textContent += ' Scaricala, aprila e inquadra il QR del tavolo del GM.';
+    else { $('benv-testo').textContent += ' Scaricala, aprila e scrivi il codice del tavolo che ti dice il GM.'; $('benv-codice').hidden = false; preparaCodice('benv-codice', 'benv-codice-in'); }
     return;
   }
   if (!tavoloOk) {
-    if (!APP) { mostra('s-errore'); $('errore-t').textContent = 'Questo link non è completo. Inquadra di nuovo il QR del tavolo del GM.'; return; }
-    mostra('s-collega');
+    if (!APP) { mostra('s-benvenuto'); $('benv-codice').hidden = false; $('benv-testo').textContent = 'Scrivi il codice del tavolo che ti dice il GM.'; if (urlApp) { $('benv-scarica').hidden = false; $('benv-scarica').href = urlApp; } preparaCodice('benv-codice', 'benv-codice-in'); return; }
+    mostra('s-collega'); preparaCodice('collega-codice', 'collega-codice-in');
     $('collega-scansiona').onclick = () => { if (nativo('scansiona') === undefined) avvisa('Aggiorna l’app per usare la fotocamera'); };
     $('collega-usa').onclick = () => nativo('salvaLink', $('collega-link').value);
     return;
   }
   avvia();
+
+  // codice del tavolo (es. DAGGERHEARTJOJO): stanza e chiave nascono dal codice, come sullo schermo del GM
+  function preparaCodice(idForm, idInput) {
+    const f = $(idForm), inp = $(idInput);
+    inp.value = ls.get('dh_codice', '') || '';
+    f.onsubmit = async e => {
+      e.preventDefault();
+      const cod = telNormalizzaCodice(inp.value);
+      if (cod.length < 6) { avvisa('Il codice del tavolo ha almeno 6 lettere o cifre'); return; }
+      const b = f.querySelector('button'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Un momento…';
+      try {
+        const d = await telDaCodice(cod); ls.set('dh_codice', cod);
+        const extra = h.get('b') ? '&b=' + encodeURIComponent(h.get('b')) : '';
+        if (APP) {
+          // l'app vuole un link https della pagina del telecomando: quello da cui gira, o quello pubblicato
+          const qui = location.protocol === 'https:' && /github\.io$/.test(location.hostname) ? location.origin + location.pathname : 'https://legeo996.github.io/Daggerheart-telecomando/';
+          nativo('salvaLink', qui + '#t=' + d.stanza + '&k=' + d.chiave + extra);
+        } else {
+          try { sessionStorage.setItem('dh_browser', '1'); } catch (er) {}
+          location.hash = 't=' + d.stanza + '&k=' + d.chiave + extra; location.reload();
+        }
+      } catch (er) { avvisa('Questo telefono non riesce a usare il codice: aggiorna il browser'); }
+      finally { b.disabled = false; b.textContent = t0; }
+    };
+  }
 
   function avvia() {
   const base = 'dhvtt/v2/' + stanza;

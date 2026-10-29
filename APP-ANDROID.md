@@ -6,8 +6,9 @@ telecomando. Ogni volta che cambia `index.html` o la cartella `app-android/`, Gi
 
     https://github.com/<utente>/<repository>/releases/latest/download/telecomando-daggerheart.apk
 
-Nello schermo del GM, riquadro Telecomandi: **📲 Scarica l'app** mostra il QR di questo indirizzo, **▦ QR del tavolo** il QR
-(uno solo per tutti) che i giocatori inquadrano dall'app per collegarsi; poi ognuno sceglie il suo personaggio.
+Nello schermo del GM, riquadro Telecomandi: **📲 Scarica l'app** mostra il QR di questo indirizzo; il **codice del tavolo**
+(predefinito `DAGGERHEARTJOJO`, si cambia con ✏️) è quello che i giocatori scrivono nell'app per collegarsi. In alternativa
+c'è ancora **▦ QR del tavolo**. Poi ognuno sceglie il suo personaggio.
 
 ## Cosa fa in più l'app rispetto alla pagina
 - resta collegata al tavolo anche con il telefono in tasca (notifica fissa "… è al tavolo", con **Lascia il tavolo**);
@@ -20,7 +21,8 @@ Nello schermo del GM, riquadro Telecomandi: **📲 Scarica l'app** mostra il QR 
 ## Installazione (giocatori)
 1. Inquadra il QR **📲 Scarica l'app** del GM e scarica `telecomando-daggerheart.apk`.
 2. Aprilo; la prima volta Android chiede di consentire "Installa app sconosciute" al browser: consenti e installa.
-3. Apri l'app e tocca **📷 Inquadra il QR del tavolo** (consenti la fotocamera), poi scegli il tuo personaggio.
+3. Apri l'app, scrivi il **codice del tavolo** che ti dice il GM (maiuscole e spazi non contano) e tocca **Entra al tavolo**
+   (oppure inquadra il QR del tavolo), poi scegli il tuo personaggio.
 4. Consenti le notifiche quando l'app lo chiede.
 
 Nell'app: **Gioco** (PF, Stress, Speranza, Armatura, abilità, joystick), **Scheda** (✏️ Modifica: Evasione, Competenza,
@@ -41,6 +43,8 @@ Gli aggiornamenti si installano sopra la versione vecchia (stessa procedura), se
 3. **Actions → App Android → Run workflow** (oppure basta caricare un `index.html` nuovo). Dopo qualche minuto l'app è nelle Releases.
 
 ## Note
+- Dal codice del tavolo nascono la stanza sul broker e la chiave che firma i comandi (PBKDF2): il codice non passa mai in rete,
+  ma chi lo conosce può entrare al tavolo. Se finisce in mani sbagliate, cambialo (✏️ o ♻ Nuovo tavolo).
 - L'app accetta solo il link del tavolo `https://…#t=…&k=…` e apre nel browser ogni altro sito.
 - Il link `https://legeo996.github.io/Daggerheart-telecomando/…` è dichiarato nell'app: in Android, *Impostazioni → App →
   Telecomando DH → Apri per impostazione predefinita → Link supportati* fa aprire quei link direttamente nell'app.
