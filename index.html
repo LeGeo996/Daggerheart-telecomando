@@ -75,7 +75,7 @@
   .abilita small { grid-column: 1 / -1; color: var(--muto); font-size: 12px; margin-top: -2px; }
   /* joystick */
   .pad { display: flex; align-items: center; justify-content: center; padding: 6px 0 2px; touch-action: none; }
-  .medaglione { position: relative; width: min(66vw, 260px, 34vh); aspect-ratio: 1; border-radius: 50%; touch-action: none;
+  .medaglione { position: relative; width: min(66vw, 250px, 31vh); aspect-ratio: 1; border-radius: 50%; touch-action: none;
     background: radial-gradient(circle, #1b140f 0 58%, #2a2016 59% 61%, #15100c 62%); border: 2px solid var(--ottone);
     box-shadow: 0 0 0 6px #1a130e, 0 0 0 7px var(--ottone-scuro), 0 0 34px color-mix(in srgb, var(--pg) 28%, transparent), inset 0 0 40px #000; }
   .medaglione::before, .medaglione::after { content: ''; position: absolute; left: 50%; top: 50%; width: 82%; height: 1px; background: linear-gradient(90deg, transparent, var(--ottone-scuro), transparent); transform: translate(-50%, -50%); }
@@ -122,6 +122,14 @@
   .lettera .testo { white-space: pre-wrap; font-size: 16px; line-height: 1.5; user-select: text; -webkit-user-select: text; }
   .lettera img { display: block; width: 100%; border-radius: 10px; border: 1px solid var(--ottone-scuro); }
   .lettera .quando { font-size: 11px; color: var(--muto); } .lettera .vecchi { border-top: 1px solid var(--linea); padding-top: 8px; font-size: 13px; color: #d8ccb0; display: flex; flex-direction: column; gap: 6px; }
+  .rifl { display: flex; align-items: center; gap: 8px; margin: 0 10px 4px; padding: 4px 6px 4px 10px; min-height: 38px; border-radius: 12px; background: var(--carta); border: 1px solid var(--linea); font-size: 13px; color: var(--muto); }
+  .rifl[hidden] { display: none; }
+  .rifl .rifl-t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .rifl .rifl-t b { color: var(--testo); }
+  .rifl button { flex: none; min-height: 32px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--ottone-scuro); background: #2a2016; color: var(--testo); font-weight: 700; font-size: 13px; }
+  .rifl button.in-coda { border-color: #b45309; background: #3a2410; color: #fde68a; }
+  .rifl.mio { background: linear-gradient(90deg, #4a3810, #2a1f0c); border-color: #fde047; color: #fff3c4; box-shadow: 0 0 16px rgba(253, 224, 71, 0.35); animation: rifl-pulsa 1.6s ease-in-out infinite; }
+  .rifl.mio .rifl-t b { color: #fde047; font-size: 15px; }
+  @keyframes rifl-pulsa { 50% { box-shadow: 0 0 26px rgba(253, 224, 71, 0.6); } }
   .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #2a2016; border: 1px solid var(--ottone-scuro); color: var(--testo); padding: 9px 14px; border-radius: 99px; font-size: 13px; z-index: 70; max-width: 90vw; text-align: center; box-shadow: 0 8px 24px #000; }
   @media (orientation: landscape) and (max-height: 520px) {
     #pag-gioco { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; } #pag-gioco .pad { grid-row: 1 / span 4; grid-column: 2; position: sticky; top: 0; } .medaglione { width: min(42vw, calc(100vh - 150px)); }
@@ -166,6 +174,7 @@
     <button type="button" class="icona" id="menu-btn" aria-label="Menu">☰</button>
   </header>
   <div class="avviso" id="coda" hidden>⏳ <span id="coda-t"></span></div>
+  <div class="rifl" id="rifl" hidden></div>
   <main id="contenuto">
     <div class="pagina" id="pag-gioco">
       <div class="risorse" id="risorse"></div>
@@ -422,7 +431,7 @@
   m.on('message', (topic, testo) => {
     let d = null; try { d = JSON.parse(testo); } catch (e) { return; }
     if (topic === base + '/gm') { gmOnline = !!(d && d.online); if (d && d.pub) { gmPub = d.pub; if (msgGrezzo) riceviPosta(msgGrezzo); } statoUI(); if (gmOnline) svuotaCoda(); return; }
-    if (topic === base + '/tavolo') { tavolo = d; disegnaScelta(); controllaProprieta(); return; }
+    if (topic === base + '/tavolo') { tavolo = d; disegnaScelta(); controllaProprieta(); disegnaRiflettore(); return; }
     if (topic === base + '/mappa') { mappa = d; disegnaMappa(); return; }
     if (pc && topic === base + '/pg/' + pc + '/stato') {
       scheda = d; coda.filter(v => v.pc === pc).forEach(v => applicaLocale(v.c));   // le modifiche in coda restano visibili
@@ -467,7 +476,32 @@
     mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta();
   }
   $('scelta-tavolo').onclick = () => nativo('cambiaLink');
-  function entraInGioco() { mostra('s-gioco'); vaiA(ls.get('dh_tel_pag', 'gioco')); disegna(); mostraCoda(); aggiornaPostaBtn(); statoUI(); if (APP) nativo('schermoAcceso', true); }
+  function entraInGioco() { mostra('s-gioco'); vaiA(ls.get('dh_tel_pag', 'gioco')); disegna(); mostraCoda(); aggiornaPostaBtn(); statoUI(); disegnaRiflettore(); if (APP) nativo('schermoAcceso', true); }
+
+  // ---------- riflettore: chi ha la scena, ✋ Prendi la scena, "Tocca a te!" ----------
+  let riflPrima;
+  function disegnaRiflettore() {
+    const el = $('rifl'); if (!el) return;
+    const R = tavolo && tavolo.rifl;
+    if (!pc || !R) { el.hidden = true; return; }
+    const coda = Array.isArray(R.coda) ? R.coda : [], mio = R.su === pc, posto = coda.indexOf(pc);
+    const nome = id => id === 'gm' ? 'il GM' : (((tavolo && tavolo.pg) || []).find(x => x.id === id) || {}).nome || '—';
+    el.hidden = false; el.classList.toggle('mio', mio);
+    if (mio) el.innerHTML = '<span class="rifl-t">🔦 <b>Tocca a te!</b> Hai la scena</span>';
+    else el.innerHTML = '<span class="rifl-t">🔦 ' + (R.su ? 'Scena: <b>' + esc(nome(R.su)) + '</b>' : 'Scena libera') + '</span>'
+      + '<button type="button" id="rifl-btn" class="' + (posto >= 0 ? 'in-coda' : '') + '" aria-label="' + (posto >= 0 ? 'Annulla la richiesta' : 'Chiedi la scena al GM') + '">' + (posto >= 0 ? '✋ ' + (posto + 1) + '° · Annulla' : '✋ Prendi la scena') + '</button>';
+    const b = $('rifl-btn');
+    if (b) b.onclick = async () => {
+      if (!m.collegato || !gmOnline) { avvisa('Il GM non è collegato: riprova tra poco'); return; }
+      await invia({ tipo: 'riflettore', chiedi: posto < 0 }); vibra(15);
+      avvisa(posto < 0 ? '✋ Hai chiesto la scena al GM' : 'Richiesta annullata');
+    };
+    if (riflPrima !== undefined && mio && riflPrima !== pc) {
+      vibra([90, 60, 90]); avvisa('🔦 Tocca a te!');
+      if (APP) nativo('notifica', '🔦 ' + ((scheda && scheda.nome) || 'Telecomando') + ': tocca a te!', 'Il GM ti ha dato la scena.');
+    }
+    riflPrima = R.su;
+  }
 
   // ---------- schede in basso ----------
   function vaiA(pag) {
