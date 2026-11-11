@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex">
 <title>Telecomando Daggerheart</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   :root { --fondo: #110d0a; --carta: #1a1410; --carta2: #221a14; --linea: #33281d; --ottone: #d4af37; --ottone-scuro: #7a5d22; --testo: #f2e7cf; --muto: #a8987a;
     --pf: #e0525a; --stress: #d0913c; --speranza: #f3c64e; --arm: #8fb3d9; --ok: #5ad17a; --pg: #d4af37; --r: 12px; }
@@ -140,6 +140,50 @@
     #pag-gioco { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; } #pag-gioco .pad { grid-row: 1 / span 4; grid-column: 2; position: sticky; top: 0; } .medaglione { width: min(42vw, calc(100vh - 150px)); }
   }
   @media (prefers-reduced-motion: reduce) { .pm button:active, .secondario:active, .scelta:active { transform: none; } }
+
+  /* ---------- veste grafica (v89): la stessa del tavolo del GM, in misura da telefono ---------- */
+  :root { --fondo: #0c0a08; --carta: #17130f; --carta2: #1f1914; --linea: #3a2d16; --ottone: #c9a55c; --ottone-scuro: #6b5326; --testo: #e9dfc8; --muto: #a99c82; --r: 6px;
+    --grana: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .8 0 0 0 0 .6 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  html, body { background: var(--grana), radial-gradient(120% 70% at 50% 0%, #1b1510 0%, var(--fondo) 70%); background-attachment: fixed; }
+  .ic { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -0.2em; flex: none; position: relative; font-style: normal; }
+  .ic svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; overflow: visible; }
+  .ic .ic-testo { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; font-size: 1px; opacity: 0; }
+  .ic-punto { width: .72em; height: .72em; vertical-align: 0; border-radius: 50%; background: var(--ic-colore); box-shadow: 0 0 0 1px rgba(0,0,0,.55), 0 0 6px var(--ic-colore); }
+  .ic-emoji { font-style: normal; filter: grayscale(1) sepia(.55) saturate(1.6) brightness(1.05); opacity: .92; }
+  h1, h2, h3 { letter-spacing: .06em; font-weight: 700; }
+  .ingresso h1 { letter-spacing: .14em; background: linear-gradient(180deg, #f7ecc8, #c9a55c 55%, #8a6a30); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .ingresso p, .scelta small, .classe, .vuoto { font-family: Spectral, Georgia, serif; }
+  .ingresso p { font-style: italic; font-size: 16px; }
+  .stemma { box-shadow: 0 0 0 1px #050403, 0 0 0 4px rgba(201,165,92,.18), 0 0 30px rgba(201,165,92,.25); }
+  .grande { font-family: Cinzel, Georgia, serif; letter-spacing: .08em; border: 1px solid #f0dca4; background: linear-gradient(180deg, #ecd9a0, #c9a55c 45%, #94722f); box-shadow: inset 0 1px 0 rgba(255,250,230,.7), inset 0 -2px 0 rgba(80,55,15,.45), 0 4px 14px rgba(0,0,0,.6); text-shadow: 0 1px 0 rgba(255,244,210,.5); }
+  .secondario, .abilita button, .pm button { font-family: Cinzel, Georgia, serif; letter-spacing: .04em; border-color: var(--ottone-scuro); background: linear-gradient(180deg, #2c241b, #1a1510 50%, #130f0c); box-shadow: inset 0 1px 0 rgba(236,217,160,.12); }
+  .pm button { font-family: Inter, sans-serif; }
+  .riquadro, .ris, .scelta { background: var(--grana), linear-gradient(180deg, #1e1914, #120f0c); border-color: var(--ottone-scuro); box-shadow: inset 0 1px 0 rgba(236,217,160,.07), inset 0 0 22px rgba(0,0,0,.5), 0 3px 10px rgba(0,0,0,.5); }
+  .scelta b { letter-spacing: .05em; }
+  .titoletto { font: 600 11.5px Cinzel, Georgia, serif; letter-spacing: .16em; color: var(--ottone); }
+  .titoletto::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, rgba(201,165,92,.6), transparent); }
+  .titoletto .poi { margin-left: 0; order: 2; }
+  header { background: var(--grana), linear-gradient(180deg, #1b1612, #0e0c0a); border-bottom-color: var(--ottone-scuro); box-shadow: 0 6px 18px rgba(0,0,0,.6); }
+  header h1 { color: #f6ecd2; } header .classe { font-style: italic; font-size: 13px; }
+  .icona { border-radius: 50%; border-color: var(--ottone-scuro); background: radial-gradient(circle at 50% 30%, #33291d, #17120e 75%); color: #ecd9a0; }
+  nav { background: var(--grana), linear-gradient(180deg, #17120e, #0c0a08); border-top-color: var(--ottone-scuro); }
+  nav button { font-family: Cinzel, Georgia, serif; letter-spacing: .06em; border-radius: 4px; } nav button span { filter: none; opacity: .75; }
+  nav button.attivo { color: #ecd9a0; background: linear-gradient(180deg, rgba(201,165,92,.20), rgba(201,165,92,.04)); box-shadow: inset 0 2px 0 var(--ottone); }
+  .tacche i { border-radius: 0; transform: skewX(-18deg); box-shadow: inset 0 0 0 1px rgba(0,0,0,.6); }
+  .ris .testa { font-family: Cinzel, Georgia, serif; letter-spacing: .1em; text-transform: uppercase; font-size: 11px; } .ris .testa strong { font-family: Inter, sans-serif; letter-spacing: 0; }
+  .chip { border-radius: 3px; font-family: Cinzel, Georgia, serif; letter-spacing: .06em; }
+  textarea, input[type=text], input[type=number], input[type=password], select { border-radius: 4px; border-color: var(--ottone-scuro); box-shadow: inset 0 2px 5px rgba(0,0,0,.7); }
+  /* carte dominio: una vera carta, con cornice doppia, fascia del dominio e testo con le grazie */
+  .carta { border: 1px solid color-mix(in srgb, var(--dc) 55%, #6b5326); border-left-width: 1px; border-radius: 5px; padding: 14px 14px 12px;
+    background: var(--grana), radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--dc) 22%, #1a140f), #120e0b 75%);
+    box-shadow: inset 0 0 0 3px #0c0a08, inset 0 0 0 4px color-mix(in srgb, var(--dc) 45%, transparent), 0 6px 16px rgba(0,0,0,.55); }
+  .carta .dom { font-family: Cinzel, Georgia, serif; letter-spacing: .16em; padding-bottom: 6px; border-bottom: 1px solid color-mix(in srgb, var(--dc) 45%, transparent); }
+  .carta h3 { font-size: 18px; letter-spacing: .05em; margin: 9px 0 5px; color: #f6ecd2; }
+  .carta p { font-family: Spectral, Georgia, serif; font-size: 15px; line-height: 1.45; color: #ddd2ba; }
+  .carta .piede button, .ogg button { border-radius: 4px; border-color: var(--ottone-scuro); font-family: Cinzel, Georgia, serif; letter-spacing: .05em; background: linear-gradient(180deg, #2c241b, #15110d); }
+  .ogg { background: var(--grana), linear-gradient(180deg, #1e1914, #120f0c); border-color: var(--ottone-scuro); } .ogg .t small { font-family: Spectral, Georgia, serif; font-size: 13.5px; font-style: italic; }
+  .foglio { background: var(--grana), linear-gradient(180deg, #1c1712, #0f0c0a); border-radius: 8px 8px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,.7); }
+  .foglio h2 { letter-spacing: .1em; }
 </style>
 </head>
 <body>
@@ -247,13 +291,15 @@
               if (o.username) corpo.push(...str(o.username)); if (o.password) corpo.push(...str(o.password));
               ws.send(pacchetto(0x10, corpo));
             };
-            ws.onmessage = e => { this._ricevi(new Uint8Array(e.data), fine); };
+            ws.onmessage = e => { if (ws !== this.ws) return; this.sentito = Date.now(); this._ricevi(new Uint8Array(e.data), fine); };
             ws.onerror = () => {};
-            ws.onclose = () => {
+            const caduta = () => {
+              if (ws !== this.ws || ws._finita) return; ws._finita = true;
               const era = this.collegato; this.collegato = false; clearInterval(this.timer);
               this._emit('stato', 'scollegato'); if (era) this._emit('close');
               fine(new Error('connessione chiusa')); if (!this.chiuso) this._riprova();
             };
+            ws.onclose = caduta; ws._caduta = caduta;
           });
         }
         _riprova() {
@@ -276,7 +322,13 @@
             if (c[1] !== 0) { this._emit('stato', 'rifiutato'); fine(new Error('connessione rifiutata dal broker (' + c[1] + ')')); this.chiuso = true; try { this.ws.close(); } catch (e) {} return; }
             this.collegato = true; this.tentativi = 0; this._emit('stato', 'collegato');
             this.iscrizioni.forEach(f => this._sub(f));
-            clearInterval(this.timer); this.timer = setInterval(() => { try { this.ws.send(new Uint8Array([0xC0, 0])); } catch (e) {} }, this.o.keepalive * 500);
+            this.sentito = Date.now();
+            clearInterval(this.timer); this.timer = setInterval(() => {
+              // Il broker risponde a ogni ping: se tace per un keepalive e mezzo la connessione è morta "in silenzio"
+              // (rete cambiata, telefono in tasca) e il browser può metterci minuti ad accorgersene. Si chiude e si riparte.
+              if (Date.now() - this.sentito > this.o.keepalive * 1500) { const w = this.ws; try { w.close(); } catch (e) {} if (w._caduta) w._caduta(); return; }
+              try { this.ws.send(new Uint8Array([0xC0, 0])); } catch (e) {}
+            }, this.o.keepalive * 500);
             this._emit('open'); fine();
           } else if (t === 3) {                                                // PUBLISH (QoS 0)
             const tl = (c[0] << 8) | c[1], topic = dec.decode(c.slice(2, 2 + tl)), qos = (tipo >> 1) & 3;
@@ -349,6 +401,149 @@
       const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(telNormalizzaPin(pin)), 'PBKDF2', false, ['deriveBits']);
       const bit = new Uint8Array(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new TextEncoder().encode('daggerheart-vtt:pg:v1:' + stanza + ':' + pc), iterations: 20000 }, base, 128));
       return Array.from(bit, x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ============================================================
+    // ICONE DISEGNATE AL POSTO DELLE EMOJI (tavolo del GM e pagina del telefono)
+    // Il programma continua a scrivere le emoji nei testi (sono anche i nomi che i test e i lettori di schermo leggono):
+    // qui, quando un testo compare nella pagina, l'emoji viene coperta da un'icona a tratto dello stesso colore del testo.
+    // Le emoji senza un'icona loro restano, ma in un solo colore, così non stonano. Disegni originali, 24×24, solo tratto.
+    // ============================================================
+    const ICONE_TRATTI = {
+      avviso: 'M12 3.5 21.5 20h-19zM12 10v5M12 17.6v.2',
+      occhio: 'M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6zM12 9.2a2.8 2.8 0 1 0 0 5.6 2.8 2.8 0 0 0 0-5.6z',
+      occhioNo: 'M2.5 12s3.6-6 9.5-6c2 0 3.7.7 5.2 1.600M21.5 12s-3.6 6-9.5 6c-2 0-3.7-.7-5.2-1.600M4 20 20 4',
+      spade: 'M4 4l9.5 9.500M4 4v3.200M4 4h3.200M20 4l-9.5 9.500M20 4v3.200M20 4h-3.200M6.5 14.500l3 3M5 19l3-3M17.5 14.500l-3 3M19 19l-3-3',
+      torcia: 'M12 2.500c2.8 3 4.5 5.2 4.5 7.600a4.5 4.5 0 0 1-9 0c0-1.5.7-2.7 1.7-3.8.3 1.3.9 2 1.7 2.3-.3-2.3.1-4.3 1.1-6.100zM9.5 16.500h5l-1 5h-3z',
+      telefono: 'M7.5 2.500h9a1.5 1.5 0 0 1 1.5 1.500v16a1.5 1.5 0 0 1-1.5 1.500h-9A1.5 1.5 0 0 1 6 20V4a1.5 1.5 0 0 1 1.5-1.500zM10.5 18.500h3',
+      scoppio: 'M12 2.500l2.2 5.6 5.8-1.9-3 5.3 4.5 3.7-5.9.7.3 5.900L12 17.6 8.1 21.800l.3-5.9-5.9-.700L7 11.5 4 6.200l5.8 1.900z',
+      cinepresa: 'M3.5 7.500h11a1.5 1.5 0 0 1 1.5 1.500v6a1.5 1.5 0 0 1-1.5 1.500h-11A1.5 1.5 0 0 1 2 15V9a1.5 1.5 0 0 1 1.5-1.500zM16 10.500l5.5-3v9l-5.5-3',
+      clessidra: 'M6 3h12M6 21h12M7.5 3v3.500c0 2 4.5 3.7 4.5 5.500s-4.5 3.5-4.5 5.500V21M16.5 3v3.500c0 2-4.5 3.7-4.5 5.500s4.5 3.5 4.5 5.500V21',
+      mano: 'M8 12V5.500a1.3 1.3 0 0 1 2.6 0V11M10.6 10.500V4a1.3 1.3 0 0 1 2.6 0v6.500M13.2 10.500V5a1.3 1.3 0 0 1 2.6 0v6M15.8 11V7.500a1.3 1.3 0 0 1 2.6 0V15c0 3.5-2.4 6-6 6-3 0-4.6-1.5-6-4l-2.2-4.200a1.3 1.3 0 0 1 2.2-1.300L8 13.5',
+      luna: 'M19.5 14.500A8 8 0 0 1 9.5 4.500a8 8 0 1 0 10 10z',
+      sole: 'M12 7.500a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 2v2.500M12 19.500V22M2 12h2.500M19.5 12H22M4.9 4.900l1.8 1.800M17.3 17.300l1.8 1.800M4.9 19.100l1.8-1.800M17.3 6.700l1.8-1.8',
+      teschio: 'M12 3a7.5 7.5 0 0 0-7.5 7.500c0 2.6 1.3 4.4 3 5.500v3.500h9V16c1.7-1.1 3-2.9 3-5.500A7.5 7.5 0 0 0 12 3zM9 10.200a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.600zM15 10.200a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.600zM10.5 19.500v-2M13.5 19.500v-2M12 14.200v1.3',
+      chiudi: 'M5.5 5.500l13 13M18.5 5.500l-13 13',
+      divieto: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM5.7 5.700l12.6 12.6',
+      zaino: 'M8.5 6.500V5a3.5 3.5 0 0 1 7 0v1.500M6.5 6.500h11A2.5 2.5 0 0 1 20 9v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2.5 2.5 0 0 1 2.5-2.500zM8 13h8v4H8zM4 11h16',
+      zampa: 'M12 12.500c-2.5 0-5 2.5-5 5 0 1.5 1.2 2.5 2.7 2.5.8 0 1.5-.5 2.3-.500s1.5.5 2.3.500c1.5 0 2.7-1 2.7-2.5 0-2.5-2.5-5-5-5zM6.2 8a1.6 2.1 0 1 0 0 4.2 1.6 2.1 0 0 0 0-4.200zM17.8 8a1.6 2.1 0 1 0 0 4.2 1.6 2.1 0 0 0 0-4.200zM9.6 4a1.6 2.1 0 1 0 0 4.2 1.6 2.1 0 0 0 0-4.200zM14.4 4a1.6 2.1 0 1 0 0 4.2 1.6 2.1 0 0 0 0-4.200z',
+      cestino: 'M4.5 6.500h15M9.5 6.500V4h5v2.500M6.5 6.500l1 14h9l1-14M10 10.500v6M14 10.500v6',
+      nebbia: 'M3 8h13M6 12h15M3 16h11M17 16h4M19 8h2',
+      stivale: 'M8 3v9.500l-3.5 3V19h15v-2c0-1.8-1.5-3-3.5-3.500L14 13V3zM4.5 19v2h15v-2M8 7.500h6',
+      maschera: 'M3.5 5.500c2.5 1 5.5 1.5 8.5 1.500s6-.5 8.5-1.500V12c0 4.5-3.5 8.5-8.5 8.500S3.5 16.5 3.5 12zM7 11.500c.8-.8 2.2-.8 3 0M14 11.500c.8-.8 2.2-.8 3 0M9 15.500c1.8 1.3 4.2 1.3 6 0',
+      avvia: 'M7 4.500v15l12.5-7.500z',
+      salva: 'M4.5 3.500h12l3 3v13a1 1 0 0 1-1 1h-14a1 1 0 0 1-1-1v-15a1 1 0 0 1 1-1zM7.5 3.500v5h8v-5M7 20.500v-7h10v7',
+      lettera: 'M3 6h18v12.500H3zM3 6.500l9 6.5 9-6.5',
+      scudo: 'M12 2.500l8 3v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10v-6zM12 2.500v19',
+      piu: 'M12 5v14M5 12h14',
+      dado: 'M12 2.500l8.5 4.800v9.400L12 21.500l-8.5-4.800V7.300zM12 2.500v6M3.5 7.300l8.5 1.2 8.5-1.200M12 8.5 5.5 17M12 8.500l6.5 8.500M5.5 17h13',
+      volume: 'M4 9.500h3.500L12 5.500v13l-4.5-4H4zM15 9a4 4 0 0 1 0 6M17.5 6.500a7.5 7.5 0 0 1 0 11',
+      muto: 'M4 9.500h3.500L12 5.500v13l-4.5-4H4zM15.5 9.500l5 5M20.5 9.500l-5 5',
+      lente: 'M10.5 3.500a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM15.7 15.700l5 5',
+      mappa: 'M3.5 6l5.5-2 6 2 5.5-2v14L15 20l-6-2-5.5 2zM9 4v14M15 6v14',
+      bersaglio: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.500a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM12 11.500v1',
+      fuoco: 'M12 2.500c3.5 3.5 6 6.5 6 10.500a6 6 0 0 1-12 0c0-2 .8-3.7 2-5.2.3 1.8 1 2.8 2 3.2-.4-3 .3-5.8 2-8.500zM12 21c-1.7 0-3-1.3-3-3 0-1.3 1.3-2.5 3-4 1.7 1.5 3 2.7 3 4 0 1.7-1.3 3-3 3z',
+      porta: 'M6 21V4.500c0-.8.7-1.5 1.5-1.500h9c.8 0 1.5.7 1.5 1.500V21M3.5 21h17M14.5 12v1.5',
+      righello: 'M3 16.5 16.5 3 21 7.5 7.5 21zM7 12.500l2 2M10 9.500l2 2M13 6.500l2 2',
+      ingranaggio: 'M12 8.500a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7zM12 2.500v3M12 18.500v3M2.5 12h3M18.5 12h3M5.3 5.300l2.1 2.100M16.6 16.600l2.1 2.100M5.3 18.700l2.1-2.100M16.6 7.400l2.1-2.1',
+      libro: 'M12 6.500C10 5 7 4.5 3.5 4.500v14c3.5 0 6.5.5 8.5 2 2-1.5 5-2 8.5-2v-14c-3.5 0-6.5.5-8.5 2zM12 6.500v14',
+      catena: 'M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.700l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.700l1-1',
+      chiave: 'M8 9.500a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM11.2 10.8 20 2.500M16 6.500l3 3M13.5 9l2 2',
+      lucchetto: 'M6 10.500h12v10H6zM8.5 10.500V7.500a3.5 3.5 0 0 1 7 0v3M12 14.500v2.5',
+      lucchettoAperto: 'M6 10.500h12v10H6zM8.5 10.500V7a3.5 3.5 0 0 1 6.8-1.200M12 14.500v2.5',
+      freccia: 'M4 12h15M13.5 6.5 19 12l-5.5 5.5',
+      su: 'M12 20V5M6.5 10.5 12 5l5.5 5.5',
+      giu: 'M12 4v15M6.5 13.5 12 19l5.5-5.5',
+      penna: 'M4 20l1-4.500L16.5 4l3.5 3.500L8.5 19zM14 6.500l3.5 3.5',
+      schermo: 'M3 4.500h18v12H3zM8.5 20.500h7M12 16.500v4',
+      ricicla: 'M19.5 12a7.5 7.5 0 0 1-13 5.100M4.5 12a7.5 7.5 0 0 1 13-5.100M17.5 3v4h-4M6.5 21v-4h4',
+      ali: 'M12 7c-2-2.5-5.5-3.5-9.5-3 0 5 2.5 9 9.5 11 7-2 9.5-6 9.5-11-4-.5-7.5.5-9.5 3zM12 7v13M6 8.500c1.5.5 3 1.5 4 3M18 8.500c-1.5.5-3 1.5-4 3',
+      pioggia: 'M7 15.500a4.5 4.5 0 0 1 .5-9 5.5 5.5 0 0 1 10.5 1.5 3.8 3.8 0 0 1-.5 7.500zM8.5 18.500l-1 2.500M12.5 18.500l-1 2.500M16.5 18.500l-1 2.5',
+      neve: 'M12 2.500v19M3.8 7.200l16.4 9.600M3.8 16.800l16.4-9.600M9.5 4l2.5 2 2.5-2M9.5 20l2.5-2 2.5 2',
+      tenda: 'M12 4 2.5 20h19zM12 4v16M12 13l-3.5 7M12 13l3.5 7',
+      grafico: 'M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6',
+      persona: 'M12 3.500a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM4.5 20.500c0-4 3.5-6.5 7.5-6.500s7.5 2.5 7.5 6.5',
+      stella: 'M12 3l2.6 5.8 6.4.7-4.7 4.3 1.3 6.200L12 16.9 6.4 20l1.3-6.200L3 9.500l6.4-.700z',
+      buco: 'M3 12c0-2.2 4-4 9-4s9 1.8 9 4-4 4-9 4-9-1.8-9-4zM7 12.200c1 1 3 1.6 5 1.600s4-.6 5-1.6',
+      ascensore: 'M5 3h14v18H5zM12 3v18M8.5 9l-1.5 2h3zM15.5 15l-1.5-2h3z',
+      mattoni: 'M3 5h18v14H3zM3 9.700h18M3 14.300h18M9 5v4.700M15 5v4.700M6 9.700v4.600M12 9.700v4.600M18 9.700v4.600M9 14.300V19M15 14.300V19',
+      forbici: 'M6.5 3.500a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM6.5 15.500a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM8.5 7.5 20 18M8.5 16.5 20 6',
+      menu: 'M4 6.500h16M4 12h16M4 17.500h16',
+      domanda: 'M8.5 9a3.5 3.5 0 1 1 5 3.200c-1 .5-1.5 1.2-1.5 2.300M12 18v.300M12 2.500a9.5 9.5 0 1 0 0 19 9.5 9.5 0 0 0 0-19z',
+      cubo: 'M12 2.500l8.5 4.500v10L12 21.5 3.5 17V7zM3.5 7l8.5 4.500L20.5 7M12 11.500v10',
+      numeri: 'M4 4.500h16v15H4zM8 9v6M11.5 9.500h2.500v2.500h-2.500V15H14M16.5 9v6',
+      mouse: 'M12 2.500a5.5 5.5 0 0 1 5.5 5.500v8a5.5 5.5 0 0 1-11 0V8A5.5 5.5 0 0 1 12 2.500zM12 6v4',
+      sonno: 'M5 6h6l-6 7h6M13.5 11h5l-5 6h5',
+      quadro: 'M3 4.500h18v15H3zM3 16l5-5 4 4 3-3 6 5M15.5 8.500v.2',
+      mondo: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z',
+      fermo: 'M6 6h12v12H6z',
+      spunta: 'M4.5 12.500l5 5L19.5 6.5',
+      rombo: 'M12 3l9 9-9 9-9-9z'
+    };
+    const ICONE_EMOJI = {
+      '⚠': 'avviso', '🚨': 'avviso', '👁': 'occhio', '🙈': 'occhioNo', '⚔': 'spade', '🤺': 'spade', '🔦': 'torcia', '🕯': 'torcia', '🏮': 'torcia',
+      '📱': 'telefono', '📲': 'telefono', '💥': 'scoppio', '✨': 'stella', '🌟': 'stella', '⚡': 'scoppio', '🎥': 'cinepresa', '🎬': 'cinepresa', '📷': 'cinepresa',
+      '⏳': 'clessidra', '✋': 'mano', '🌑': 'luna', '🌙': 'luna', '☀': 'sole', '🌅': 'sole', '🌇': 'sole', '💀': 'teschio', '✖': 'chiudi', '✕': 'chiudi', '🚫': 'divieto', '⛔': 'divieto',
+      '🎒': 'zaino', '👝': 'zaino', '🧰': 'zaino', '🐾': 'zampa', '🗑': 'cestino', '🌫': 'nebbia', '🏃': 'stivale', '🦶': 'stivale', '🎭': 'maschera',
+      '▶': 'avvia', '💾': 'salva', '✉': 'lettera', '📨': 'lettera', '🛡': 'scudo', '➕': 'piu', '🎲': 'dado', '🔊': 'volume', '🔇': 'muto', '🔍': 'lente', '🔬': 'lente',
+      '🗺': 'mappa', '🎯': 'bersaglio', '⭕': 'bersaglio', '🔥': 'fuoco', '🚪': 'porta', '📏': 'righello', '📐': 'righello', '⚙': 'ingranaggio', '📖': 'libro', '📚': 'libro', '📜': 'libro',
+      '🔗': 'catena', '🔑': 'chiave', '🔒': 'lucchetto', '🔓': 'lucchettoAperto', '➡': 'freccia', '➔': 'freccia', '👉': 'freccia', '⬆': 'su', '⬇': 'giu',
+      '✏': 'penna', '🖌': 'penna', '🖥': 'schermo', '♻': 'ricicla', '↩': 'ricicla', '🪽': 'ali', '🦅': 'ali', '🌧': 'pioggia', '⛈': 'pioggia', '🌦': 'pioggia', '❄': 'neve',
+      '⛺': 'tenda', '🏕': 'tenda', '📊': 'grafico', '👤': 'persona', '🧙': 'persona', '🕳': 'buco', '🛗': 'ascensore', '🧱': 'mattoni', '✂': 'forbici', '☰': 'menu',
+      '❓': 'domanda', '📦': 'cubo', '🔢': 'numeri', '🖱': 'mouse', '💤': 'sonno', '🖼': 'quadro', '🌐': 'mondo', '⏹': 'fermo', '✓': 'spunta', '❖': 'rombo', '📤': 'su'
+    };
+    const ICONE_PUNTI = { '🟢': '#5fd08a', '🔴': '#e0564f', '🟡': '#e7c25a', '⚪': '#d9d2c2', '🔵': '#62a8e8', '🟣': '#a877e0', '🟠': '#e39a4a' };
+    const _ICONE_RE = /(\p{Extended_Pictographic}|[←-⇿■-◿✀-➿⬀-⯿☰])️?(?:‍\p{Extended_Pictographic}️?)*/gu;
+    const _ICONE_SALTA = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, OPTION: 1, SELECT: 1, TITLE: 1, INPUT: 1, svg: 1, CANVAS: 1 };
+
+    function iconeSprite() {   // i disegni, una volta sola, in fondo alla pagina
+      if (document.getElementById('icone-sprite')) return;
+      const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg');
+      svg.id = 'icone-sprite'; svg.setAttribute('aria-hidden', 'true'); svg.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+      Object.keys(ICONE_TRATTI).forEach(k => { const s = document.createElementNS(ns, 'symbol'); s.id = 'ic-' + k; s.setAttribute('viewBox', '0 0 24 24'); const p = document.createElementNS(ns, 'path'); p.setAttribute('d', ICONE_TRATTI[k]); s.appendChild(p); svg.appendChild(s); });
+      document.body.appendChild(svg);
+    }
+    function _iconaPer(emoji) {   // l'elemento che prende il posto dell'emoji: il carattere resta dentro, invisibile, per chi legge il testo
+      const base = emoji.replace(/️/g, ''), nome = ICONE_EMOJI[base], punto = ICONE_PUNTI[base];
+      const i = document.createElement('i'); i.setAttribute('aria-hidden', 'true');
+      const t = document.createElement('span'); t.className = 'ic-testo'; t.textContent = emoji;
+      if (punto) { i.className = 'ic ic-punto'; i.style.setProperty('--ic-colore', punto); i.appendChild(t); return i; }
+      if (!nome) { i.className = 'ic-emoji'; i.textContent = emoji; return i; }   // nessun disegno: resta l'emoji, in un colore solo
+      i.className = 'ic'; i.dataset.ic = nome;
+      const ns = 'http://www.w3.org/2000/svg', svg = document.createElementNS(ns, 'svg'), use = document.createElementNS(ns, 'use');
+      svg.setAttribute('viewBox', '0 0 24 24'); use.setAttribute('href', '#ic-' + nome); svg.appendChild(use); i.appendChild(svg); i.appendChild(t);
+      return i;
+    }
+    function iconeApplica(radice) {
+      if (!radice || (radice.nodeType !== 1 && radice.nodeType !== 3)) return;
+      const nodi = [];
+      if (radice.nodeType === 3) nodi.push(radice);
+      else { const w = document.createTreeWalker(radice, NodeFilter.SHOW_TEXT); while (w.nextNode()) nodi.push(w.currentNode); }
+      for (const n of nodi) {
+        const testo = n.nodeValue; if (!testo || testo.length < 1) continue;
+        let salta = false; for (let e = n.parentNode; e && e.nodeType === 1; e = e.parentNode) { if (_ICONE_SALTA[e.nodeName] || (e.classList && (e.classList.contains('ic') || e.classList.contains('ic-emoji') || e.classList.contains('senza-icone'))) || e.isContentEditable) { salta = true; break; } }
+        if (salta) continue;
+        _ICONE_RE.lastIndex = 0; if (!_ICONE_RE.test(testo)) continue;
+        _ICONE_RE.lastIndex = 0; const pezzi = document.createDocumentFragment(); let da = 0, m;
+        while ((m = _ICONE_RE.exec(testo))) { if (m.index > da) pezzi.appendChild(document.createTextNode(testo.slice(da, m.index))); pezzi.appendChild(_iconaPer(m[0])); da = m.index + m[0].length; }
+        if (da < testo.length) pezzi.appendChild(document.createTextNode(testo.slice(da)));
+        if (n.parentNode) n.parentNode.replaceChild(pezzi, n);
+      }
+    }
+    function iconeAvvia() {   // d'ora in poi ogni testo che compare viene sistemato, a gruppi, una volta per fotogramma
+      iconeSprite(); iconeApplica(document.body);
+      let coda = new Set(), inAttesa = false;
+      const svuota = () => { inAttesa = false; const c = coda; coda = new Set(); c.forEach(n => { if (n.isConnected) iconeApplica(n); }); };
+      new MutationObserver(ms => {
+        for (const m of ms) {
+          if (m.type === 'characterData') coda.add(m.target);
+          else m.addedNodes.forEach(n => { if (n.nodeType === 3 || (n.nodeType === 1 && !(n.classList && (n.classList.contains('ic') || n.classList.contains('ic-emoji'))))) coda.add(n); });
+        }
+        if (coda.size && !inAttesa) { inAttesa = true; (window.requestAnimationFrame || setTimeout)(svuota); }
+      }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    }
+    if (typeof document !== 'undefined' && typeof MutationObserver !== 'undefined' && document.addEventListener) {
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iconeAvvia); else iconeAvvia();
     }
 
 (() => {
@@ -462,14 +657,29 @@
   // modifiche alla scheda: partono subito se il GM c'è, altrimenti aspettano in coda (anche se chiudi l'app)
   async function modifica(c) {
     applicaLocale(c); disegna();
-    if (alTavolo() && pc && !coda.length) { await invia(c); }
-    else { coda.push({ c, pc }); ls.set(K_CODA, coda); mostraCoda(); if (!alTavolo()) avvisa('💾 Salvato sul telefono: arriverà al GM appena è collegato'); svuotaCoda(); }
+    const mio = pc;
+    if (alTavolo() && mio && !coda.some(v => v.pc === mio) && await invia(c, mio) === true) return;
+    // non è partita (GM assente, rete caduta proprio adesso, altre modifiche in attesa): resta in coda
+    coda.push({ c, pc: mio }); ls.set(K_CODA, coda); mostraCoda(); if (!alTavolo()) avvisa('💾 Salvato sul telefono: arriverà al GM appena è collegato'); svuotaCoda();
   }
+  // Il nome interno di una carta o di un oggetto nuovo lo sceglie il telefono e il GM lo tiene: così una cosa creata
+  // senza collegamento si può ritoccare o togliere prima che il GM l'abbia vista, senza doppioni.
+  const nuovoId = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   let svuotando = false;
   async function svuotaCoda() {
-    if (svuotando || !coda.length || !m.collegato || !gmOnline) return; svuotando = true;
+    if (svuotando || !coda.some(v => v.pc === pc) || !m.collegato || !gmOnline) return; svuotando = true;
     let n = 0;
-    try { while (coda.length && m.collegato && gmOnline) { const v = coda[0]; if (v.pc === pc) { await invia(v.c); n++; } coda.shift(); ls.set(K_CODA, coda); await new Promise(r => setTimeout(r, 60)); } if (n > 1) avvisa('✅ Modifiche consegnate al GM'); }
+    // Una modifica esce dalla coda solo dopo essere partita davvero; quelle di un altro personaggio restano dove sono.
+    try {
+      // eslint-disable-next-line no-unmodified-loop-condition -- gmOnline cambia durante le attese (messaggi dal broker)
+      while (m.collegato && gmOnline) {
+        const v = coda.find(x => x.pc === pc); if (!v) break;
+        if (await invia(v.c) !== true) break;
+        const i = coda.indexOf(v); if (i >= 0) coda.splice(i, 1); ls.set(K_CODA, coda); n++;
+        await new Promise(r => setTimeout(r, 60));
+      }
+      if (n > 1) avvisa('✅ Modifiche consegnate al GM');
+    }
     finally { svuotando = false; mostraCoda(); }
   }
   function mostraCoda() {
@@ -492,9 +702,9 @@
     else if (c.tipo === 'oro') { const o = d.zaino.oro; o[c.i] = Math.max(0, o[c.i] + c.d); }
     else if (c.tipo === 'oggetto') { const o = d.zaino.ogg.find(x => x.id === c.id); if (o) o.n = Math.max(0, o.n + c.d); }
     else if (c.tipo === 'carta') { const k = d.carte.find(x => x.id === c.id); if (k) k.spesa = !!c.spesa; }
-    else if (c.tipo === 'carta-salva') { const k = c.carta, D = (tavolo && tavolo.domini && tavolo.domini[k.dominio]) || ['', '#a8987a'], v = { nome: k.nome, dk: k.dominio, dom: D[0], col: D[1], liv: k.liv, rich: k.richiamo, uso: k.uso, testo: k.testo, volta: !!k.volta }; const e = k.id && d.carte.find(x => x.id === k.id); if (e) Object.assign(e, v); else d.carte.push(Object.assign({ id: 'nuova' + Date.now(), spesa: false }, v)); }
+    else if (c.tipo === 'carta-salva') { const k = c.carta, D = (tavolo && tavolo.domini && tavolo.domini[k.dominio]) || ['', '#a8987a'], v = { nome: k.nome, dk: k.dominio, dom: D[0], col: D[1], liv: k.liv, rich: k.richiamo, uso: k.uso, testo: k.testo, volta: !!k.volta }; const e = k.id && d.carte.find(x => x.id === k.id); if (e) Object.assign(e, v); else d.carte.push(Object.assign({ id: k.id || 'nuova' + Date.now(), spesa: false }, v)); }
     else if (c.tipo === 'carta-togli') d.carte = d.carte.filter(x => x.id !== c.id);
-    else if (c.tipo === 'ogg-salva') { const o = c.ogg, e = o.id && d.zaino.ogg.find(x => x.id === o.id); if (e) Object.assign(e, o); else d.zaino.ogg.push(Object.assign({}, o, { id: 'nuovo' + Date.now() })); }
+    else if (c.tipo === 'ogg-salva') { const o = c.ogg, e = o.id && d.zaino.ogg.find(x => x.id === o.id); if (e) Object.assign(e, o); else d.zaino.ogg.push(Object.assign({}, o, { id: o.id || 'nuovo' + Date.now() })); }
     else if (c.tipo === 'ogg-togli') d.zaino.ogg = d.zaino.ogg.filter(x => x.id !== c.id);
     else if (c.tipo === 'testo') { const k = { classe: 'classe', attacchi: 'attacchi', tratti: 'tratti' }[c.campo]; if (k) d[k] = c.v; }
     if (pc) ls.set('dh_scheda_' + stanza + '_' + pc, d);   // la scheda sul telefono resta aggiornata anche senza collegamento
@@ -750,7 +960,7 @@
     else $('ec-togli').onclick = () => { if (confirm('Togliere la carta “' + c.nome + '”?')) { modifica({ tipo: 'carta-togli', id: c.id }); chiudiFoglio(); } };
     $('ec-salva').onclick = () => {
       const nome = $('ec-nome').value.trim(); if (!nome) { avvisa('Dai un nome alla carta'); $('ec-nome').focus(); return; }
-      modifica({ tipo: 'carta-salva', carta: { id: c ? c.id : undefined, nome, dominio: $('ec-dom').value, liv: +$('ec-liv').value || 1, richiamo: +$('ec-rich').value || 0, uso: $('ec-uso').value, testo: $('ec-testo').value, volta: $('ec-volta').checked } });
+      modifica({ tipo: 'carta-salva', carta: { id: c ? c.id : nuovoId('c'), nome, dominio: $('ec-dom').value, liv: +$('ec-liv').value || 1, richiamo: +$('ec-rich').value || 0, uso: $('ec-uso').value, testo: $('ec-testo').value, volta: $('ec-volta').checked } });
       chiudiFoglio();
     };
   }
@@ -779,7 +989,7 @@
     else $('eo-togli').onclick = () => { if (confirm('Togliere “' + g.nome + '” dallo zaino?')) { modifica({ tipo: 'ogg-togli', id: g.id }); chiudiFoglio(); } };
     $('eo-salva').onclick = () => {
       const nome = $('eo-nome').value.trim(); if (!nome) { avvisa('Dai un nome all’oggetto'); $('eo-nome').focus(); return; }
-      modifica({ tipo: 'ogg-salva', ogg: { id: g ? g.id : undefined, nome, n: Math.max(0, Math.min(99, +$('eo-n').value || 0)), nota: $('eo-nota').value.trim(), cons: $('eo-cons').checked } });
+      modifica({ tipo: 'ogg-salva', ogg: { id: g ? g.id : nuovoId('o'), nome, n: Math.max(0, Math.min(99, +$('eo-n').value || 0)), nota: $('eo-nota').value.trim(), cons: $('eo-cons').checked } });
       chiudiFoglio();
     };
   }
