@@ -227,7 +227,7 @@
     <button type="button" class="icona" id="posta-btn" hidden aria-label="Messaggi del GM">✉️<sup id="posta-n"></sup></button>
     <button type="button" class="icona" id="menu-btn" aria-label="Menu">☰</button>
   </header>
-  <div class="avviso" id="coda" hidden>⏳ <span id="coda-t"></span></div>
+  <div class="avviso" id="coda" hidden><span id="coda-ic">⏳ </span><span id="coda-t"></span></div>
   <div class="rifl" id="rifl" hidden></div>
   <main id="contenuto">
     <div class="pagina" id="pag-gioco">
@@ -478,7 +478,8 @@
       mondo: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z',
       fermo: 'M6 6h12v12H6z',
       spunta: 'M4.5 12.500l5 5L19.5 6.5',
-      rombo: 'M12 3l9 9-9 9-9-9z'
+      rombo: 'M12 3l9 9-9 9-9-9z',
+      provetta: 'M9 3h6M10 3v6.5L4.8 18.3A1.8 1.8 0 0 0 6.4 21h11.2a1.8 1.8 0 0 0 1.6-2.7L14 9.5V3M7.3 15h9.4'
     };
     const ICONE_EMOJI = {
       '⚠': 'avviso', '🚨': 'avviso', '👁': 'occhio', '🙈': 'occhioNo', '⚔': 'spade', '🤺': 'spade', '🔦': 'torcia', '🕯': 'torcia', '🏮': 'torcia',
@@ -490,7 +491,7 @@
       '🔗': 'catena', '🔑': 'chiave', '🔒': 'lucchetto', '🔓': 'lucchettoAperto', '➡': 'freccia', '➔': 'freccia', '👉': 'freccia', '⬆': 'su', '⬇': 'giu',
       '✏': 'penna', '🖌': 'penna', '🖥': 'schermo', '♻': 'ricicla', '↩': 'ricicla', '🪽': 'ali', '🦅': 'ali', '🌧': 'pioggia', '⛈': 'pioggia', '🌦': 'pioggia', '❄': 'neve',
       '⛺': 'tenda', '🏕': 'tenda', '📊': 'grafico', '👤': 'persona', '🧙': 'persona', '🕳': 'buco', '🛗': 'ascensore', '🧱': 'mattoni', '✂': 'forbici', '☰': 'menu',
-      '❓': 'domanda', '📦': 'cubo', '🔢': 'numeri', '🖱': 'mouse', '💤': 'sonno', '🖼': 'quadro', '🌐': 'mondo', '⏹': 'fermo', '✓': 'spunta', '❖': 'rombo', '📤': 'su'
+      '❓': 'domanda', '📦': 'cubo', '🔢': 'numeri', '🖱': 'mouse', '💤': 'sonno', '🖼': 'quadro', '🌐': 'mondo', '⏹': 'fermo', '✓': 'spunta', '❖': 'rombo', '📤': 'su', '🧪': 'provetta', '⚗': 'provetta'
     };
     const ICONE_PUNTI = { '🟢': '#5fd08a', '🔴': '#e0564f', '🟡': '#e7c25a', '⚪': '#d9d2c2', '🔵': '#62a8e8', '🟣': '#a877e0', '🟠': '#e39a4a' };
     const _ICONE_RE = /(\p{Extended_Pictographic}|[←-⇿■-◿✀-➿⬀-⯿☰])️?(?:‍\p{Extended_Pictographic}️?)*/gu;
@@ -574,7 +575,13 @@
   const vibra = ms => { try { if (APP) nativo('vibra', Array.isArray(ms) ? ms.reduce((a, b) => a + b, 0) : ms); else if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) navigator.vibrate(ms); } catch (e) {} };
 
   const h = new URLSearchParams(location.hash.slice(1));
-  const stanza = h.get('t'), chiave = h.get('k'), broker = h.get('b') || BROKER_PREDEFINITO;
+  // MASTER TESTER: con il codice "Stella1000" al posto del codice del tavolo si entra in un personaggio di prova che vive
+  // solo su questo telefono. Niente tavolo e niente rete: serve a provare la pagina dopo una modifica (scheda, zaino,
+  // carte, editor). Il joystick e i messaggi del GM hanno bisogno di un tavolo vero e qui restano spenti.
+  // Se il telefono conosce già un tavolo (l'ultimo usato), "Stella1000" porta invece in MASTER TESTER su quel tavolo, in rete:
+  // il GM lo fa comparire dal riquadro 🧪 Master tester del VTT e il telefono lo prende da solo (codice del PG 1000).
+  const CODICE_PROVA = 'STELLA1000', PROVA = h.get('prova') === '1', PG_PROVA = 'pc_master_tester', MASTER = h.get('mt') === '1' && !PROVA, PIN_MASTER = '1000';
+  const stanza = PROVA ? 'provamaster' : h.get('t'), chiave = PROVA ? 'provamaster0' : h.get('k'), broker = h.get('b') || BROKER_PREDEFINITO;
   const tavoloOk = !!(stanza && /^[a-z0-9]{6,}$/.test(stanza) && chiave && /^[a-z0-9]{8,}$/.test(chiave));
 
   if (!window.crypto || !crypto.subtle) { mostra('s-errore'); $('errore-t').textContent = 'Apri il telecomando da un indirizzo https.'; return; }
@@ -609,6 +616,14 @@
       e.preventDefault();
       const cod = telNormalizzaCodice(inp.value);
       if (cod.length < 6) { avvisa('Il codice del tavolo ha almeno 6 lettere o cifre'); return; }
+      if (cod === CODICE_PROVA) {   // personaggio di prova: nessun tavolo da cercare
+        const qui = location.protocol === 'https:' && /github\.io$/.test(location.hostname) ? location.origin + location.pathname : 'https://legeo996.github.io/Daggerheart-telecomando/';
+        const u = ls.get('dh_ultimo_tavolo', null), inRete = u && /^[a-z0-9]{6,}$/.test(u.t || '') && /^[a-z0-9]{8,}$/.test(u.k || '');
+        const ancora = inRete ? 'mt=1&t=' + u.t + '&k=' + u.k + (u.b ? '&b=' + encodeURIComponent(u.b) : '') : 'prova=1&t=provamaster&k=provamaster0';   // t= e k= ci sono perché l'app già installata accetta solo link fatti così
+        if (APP && nativo('salvaLink', qui + '#' + ancora) !== undefined) return;
+        try { sessionStorage.setItem('dh_browser', '1'); } catch (er) {}
+        location.hash = ancora; location.reload(); return;
+      }
       const b = f.querySelector('button'); b.disabled = true; const t0 = b.textContent; b.textContent = 'Un momento…';
       try {
         const d = await telDaCodice(cod); ls.set('dh_codice', cod);
@@ -634,7 +649,23 @@
   const pronte = (async () => { if (!coppia || !coppia.priv) { coppia = await telGeneraCoppia(); ls.set('dh_dev_chiavi', coppia); } return coppia; })();
   const K_PG = 'dh_pg_' + stanza, K_CODA = 'dh_coda_' + stanza, K_TAV = 'dh_tavolo_' + stanza, K_PIN = p => 'dh_pin_' + stanza + '_' + p;
   let pc = ls.get(K_PG, null), tavolo = ls.get(K_TAV, null), presentatoAt = 0, scheda = null, gmOnline = null, gmPub = null, msgGrezzo = null, mappa = null, servizioAvviato = false;
-  let seq = Date.now() * 1000, coda = ls.get(K_CODA, []);
+  if (PROVA) {   // il tavolo di prova ha un solo personaggio, già scelto; la sua scheda resta sul telefono fra una prova e l'altra
+    const DOM = { arcano: ['Arcano', '#8e6bd8'], lama: ['Lama', '#c8483f'], osso: ['Osso', '#b9b3a3'], codice: ['Codice', '#4f8fd6'], grazia: ['Grazia', '#d976b0'], mezzanotte: ['Mezzanotte', '#5a5f8f'], saggio: ['Saggio', '#5fae6a'], splendore: ['Splendore', '#e0b84a'], valore: ['Valore', '#d98a3c'] };
+    tavolo = { v: 2, pg: [{ id: PG_PROVA, nome: 'MASTER TESTER', colore: '#c9a55c', classe: 'Personaggio di prova', occupato: false, chi: '', online: false, pin: '' }], domini: DOM, rifl: { su: null, coda: [] } };
+    pc = PG_PROVA; ls.set(K_PG, pc); ls.set(K_TAV, tavolo);
+    if (!ls.get('dh_scheda_' + stanza + '_' + pc, null)) ls.set('dh_scheda_' + stanza + '_' + pc, {
+      id: PG_PROVA, nome: 'MASTER TESTER', colore: '#c9a55c', classe: 'Personaggio di prova · livello 1', pf: [6, 6], stress: [2, 6], speranza: [3, 6], armatura: [2, 3],
+      condizioni: ['Vulnerabile'], abilita: [], scena: 'Modalità prova', paura: 3, tracce: true, permessi: { tracce: true, scheda: true },
+      soglie: [7, 14], evasione: 10, competenza: 1, attacchi: 'Spada lunga — Agilità +2, d10+3 fisici, Mischia\nArco corto — Finezza +1, d6+3 fisici, Lontano', tratti: 'Agilità +2 · Forza +1 · Finezza +1 · Istinto 0 · Presenza 0 · Conoscenza −1',
+      max: { hpMax: 6, stressMax: 6, hopeMax: 6, armorMax: 3, evasion: 10, tMaj: 7, tSev: 14, proficiency: 1 },
+      zaino: { oro: [3, 1, 0], ogg: [{ id: 'oprova00001', nome: 'Torcia', n: 2, nota: 'Brucia un’ora', cons: true }, { id: 'oprova00002', nome: 'Corda di canapa', n: 1, nota: '15 metri', cons: false }, { id: 'oprova00003', nome: 'Pozione di cura minore', n: 1, nota: 'Recupera 1d4 PF', cons: true }] },
+      carte: [{ id: 'cprova00001', nome: 'Colpo di prova', dk: 'lama', dom: 'Lama', col: '#c8483f', liv: 1, rich: 1, uso: 'sempre', testo: 'Una carta finta per provare l’aspetto, il capovolgimento e la modifica.', volta: false, spesa: false },
+        { id: 'cprova00002', nome: 'Scudo di prova', dk: 'valore', dom: 'Valore', col: '#d98a3c', liv: 2, rich: 0, uso: 'riposo', testo: 'Una seconda carta, da usare una volta per riposo: prova il segno “usata”.', volta: false, spesa: true }]
+    });
+  }
+  if (MASTER && pc && pc !== PG_PROVA) { pc = null; scheda = null; }   // in MASTER TESTER il personaggio è solo quello
+  if (!PROVA) ls.set('dh_ultimo_tavolo', { t: stanza, k: chiave, b: h.get('b') || '' });   // per "Stella1000": MASTER TESTER su questo tavolo
+  let seq = Date.now() * 1000, coda = PROVA ? [] : ls.get(K_CODA, []);
   if (pc) scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null);
 
   const m = new MqttMini(broker, { clientId: 'dhpg-' + DEV.slice(0, 8) + '-' + Math.random().toString(36).slice(2, 6), keepalive: APP ? 55 : 20, will: { topic: base + '/presenza/' + DEV, payload: JSON.stringify({ online: false }), retain: true } });
@@ -658,6 +689,7 @@
   async function modifica(c) {
     applicaLocale(c); disegna();
     const mio = pc;
+    if (PROVA) return;   // personaggio di prova: la modifica resta sul telefono, non c'è nessuno a cui consegnarla
     if (alTavolo() && mio && !coda.some(v => v.pc === mio) && await invia(c, mio) === true) return;
     // non è partita (GM assente, rete caduta proprio adesso, altre modifiche in attesa): resta in coda
     coda.push({ c, pc: mio }); ls.set(K_CODA, coda); mostraCoda(); if (!alTavolo()) avvisa('💾 Salvato sul telefono: arriverà al GM appena è collegato'); svuotaCoda();
@@ -685,7 +717,8 @@
   function mostraCoda() {
     const n = coda.filter(v => v.pc === pc).length, fuori = !alTavolo();
     $('coda').hidden = !n && !fuori;
-    $('coda').firstChild.textContent = fuori ? '📴 ' : '⏳ ';
+    if (PROVA) { $('coda').hidden = false; $('coda-ic').textContent = '🧪 '; $('coda-t').textContent = 'Modalità prova: MASTER TESTER vive solo su questo telefono. Joystick, abilità e messaggi del GM aspettano un tavolo vero.'; return; }
+    $('coda-ic').textContent = fuori ? '📴 ' : '⏳ ';
     $('coda-t').textContent = (fuori ? (m.collegato ? 'Il GM non ha attivato i telecomandi' : 'Senza collegamento') + ': puoi cambiare la scheda, il joystick e le abilità aspettano il GM.' : '')
       + (n ? (fuori ? ' ' : '') + n + (n === 1 ? ' modifica salvata' : ' modifiche salvate') + (fuori ? ', partono appena il GM si collega.' : ': le sto mandando al GM…') : '');
   }
@@ -714,14 +747,16 @@
   const statoUI = () => {
     const el = $('stato'), t = $('stato-t');
     let cls = 'ok', txt = 'Al tavolo';
-    if (!m.collegato) { cls = 'ko'; txt = navigator.onLine === false ? 'Senza rete' : 'Riconnessione…'; }
+    if (PROVA) { cls = 'attesa'; txt = 'Modalità prova'; }
+    else if (!m.collegato) { cls = 'ko'; txt = navigator.onLine === false ? 'Senza rete' : 'Riconnessione…'; }
     else if (!gmOnline) { cls = 'attesa'; txt = 'GM non collegato'; }
     else if (!scheda) { cls = 'attesa'; txt = 'In attesa del GM'; }
     el.className = 'stato ' + cls; t.textContent = txt;
-    if (!$('s-scelta').hidden) $('scelta-stato').textContent = !tavolo ? (m.collegato ? 'In attesa del GM: per la prima volta deve attivare i telecomandi.' : 'Collegamento al tavolo… (la prima volta serve la rete)')
+    if (!$('s-scelta').hidden && MASTER) $('scelta-stato').textContent = !tavolo || !(tavolo.pg || []).some(x => x.id === PG_PROVA) ? '🧪 MASTER TESTER non è al tavolo: nel VTT, riquadro «Master tester», premi «Fai apparire MASTER TESTER».' + (m.collegato ? '' : ' (collegamento in corso…)') : 'Entro in MASTER TESTER…';
+    else if (!$('s-scelta').hidden) $('scelta-stato').textContent = !tavolo ? (m.collegato ? 'In attesa del GM: per la prima volta deve attivare i telecomandi.' : 'Collegamento al tavolo… (la prima volta serve la rete)')
       : !alTavolo() ? 'Telecomandi non attivi: puoi prendere il tuo personaggio e cambiare la scheda.' : 'Tocca il tuo personaggio.';
     const fuori = !alTavolo(), pad = $('pad');
-    if (pad) { pad.classList.toggle('spento', fuori); $('aiuto').textContent = fuori ? 'Il joystick funziona quando il GM attiva i telecomandi.' : 'Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.'; }
+    if (pad) { pad.classList.toggle('spento', fuori); $('aiuto').textContent = PROVA ? 'Personaggio di prova: il joystick funziona solo collegati a un tavolo vero.' : fuori ? 'Il joystick funziona quando il GM attiva i telecomandi.' : 'Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.'; }
     const cambiato = document.body.classList.contains('fuori') !== fuori; document.body.classList.toggle('fuori', fuori);
     if (!$('s-gioco').hidden) { mostraCoda(); disegnaRiflettore(); if (cambiato) disegna(); }
     if (fuori) { try { lasciaJoy(); } catch (e) { /* joystick non ancora pronto */ } }
@@ -739,7 +774,7 @@
       if (gmOnline && !prima) presentati().then(() => svuotaCoda());   // il GM è appena arrivato: prima il PG, poi le modifiche salvate
       return;
     }
-    if (topic === base + '/tavolo') { tavolo = d; ls.set(K_TAV, d); disegnaScelta(); controllaProprieta(); disegnaRiflettore(); return; }
+    if (topic === base + '/tavolo') { tavolo = d; ls.set(K_TAV, d); disegnaScelta(); controllaProprieta(); disegnaRiflettore(); masterAuto(); return; }
     if (topic === base + '/mappa') { mappa = d; disegnaMappa(); return; }
     if (pc && topic === base + '/pg/' + pc + '/stato') {
       scheda = d; coda.filter(v => v.pc === pc).forEach(v => applicaLocale(v.c));   // le modifiche in coda restano visibili
@@ -751,7 +786,7 @@
   });
   m.subscribe(base + '/gm'); m.subscribe(base + '/tavolo'); m.subscribe(base + '/mappa');
   if (pc) iscriviPG(pc);
-  m.connect().catch(() => statoUI());
+  if (!PROVA) m.connect().catch(() => statoUI());   // il personaggio di prova non cerca nessun tavolo
   window.addEventListener('online', statoUI); window.addEventListener('offline', statoUI);
   setInterval(() => { statoUI(); svuotaCoda(); }, 4000);
 
@@ -765,17 +800,27 @@
   }
   function disegnaScelta() {
     const box = $('scelte'); if (!tavolo) return;
-    box.innerHTML = (tavolo.pg || []).map(p => { const mio = p.chi === DEV, altro = p.occupato && !mio;
+    box.innerHTML = (tavolo.pg || []).filter(p => !MASTER || p.id === PG_PROVA).map(p => { const mio = p.chi === DEV, altro = p.occupato && !mio;
       return '<button type="button" class="scelta' + (mio ? ' mio' : '') + '" data-pg="' + esc(p.id) + '" style="--c:' + (/^#[0-9a-f]{3,8}$/i.test(p.colore) ? p.colore : '#d4af37') + '"><span class="gemma"></span><span><b>' + esc(p.nome) + '</b><small>' + esc(p.classe) + '</small></span>'
         + '<span class="chip ' + (mio ? 'oro' : altro ? (p.online ? 'rossa' : '') : 'verde') + '">' + (mio ? 'il tuo' : altro ? (p.online ? 'in uso' : 'scelto') : 'libero') + '</span></button>'; }).join('');
     box.querySelectorAll('[data-pg]').forEach(b => b.onclick = () => scegli(b.dataset.pg));
     statoUI();
   }
-  async function scegli(id) {
+  // MASTER TESTER: appena il tavolo lo elenca, il telefono lo prende da solo (il suo codice è noto: 1000)
+  let mtInCorso = false, mtUscita = false;
+  async function masterAuto() {
+    if (!MASTER || mtInCorso || mtUscita || pc === PG_PROVA || !tavolo) return;
+    const t = (tavolo.pg || []).find(x => x.id === PG_PROVA); if (!t) return;
+    mtInCorso = true;
+    try { await scegli(PG_PROVA, t.pin ? await telImprontaPin(stanza, PG_PROVA, PIN_MASTER) : ''); } finally { mtInCorso = false; }
+  }
+  async function scegli(id, improntaNota) {
     const t = (tavolo.pg || []).find(x => x.id === id); if (!t) return;
-    if (t.occupato && t.chi !== DEV && !confirm(t.nome + ' è già stato scelto da un altro telefono' + (t.online ? ' (collegato adesso)' : '') + '. Prenderlo comunque?')) return;
+    if (improntaNota !== undefined && t.pin && improntaNota !== t.pin) improntaNota = undefined;   // il GM ha cambiato il codice: lo si chiede
+    if (t.occupato && t.chi !== DEV && improntaNota === undefined && !confirm(t.nome + ' è già stato scelto da un altro telefono' + (t.online ? ' (collegato adesso)' : '') + '. Prenderlo comunque?')) return;
     let impronta = '';
-    if (t.pin) { impronta = await chiediPin(t); if (!impronta) return; }
+    if (improntaNota !== undefined) impronta = improntaNota;
+    else if (t.pin) { impronta = await chiediPin(t); if (!impronta) return; }
     ls.set(K_PIN(id), impronta);
     pc = id; ls.set(K_PG, pc); scheda = ls.get('dh_scheda_' + stanza + '_' + pc, null); msgGrezzo = null; posta = ls.get(chPosta(), []);
     if (m.collegato) { iscriviPG(pc); await presentati(); m.publish(base + '/presenza/' + DEV, JSON.stringify({ online: true, pc }), { retain: true }); }
@@ -805,12 +850,24 @@
     });
   }
   function lasciaPG(avvisaGM) {
-    if (avvisaGM && pc) invia({ tipo: 'lascia' });
+    if (avvisaGM && pc) invia({ tipo: 'lascia' }, pc);   // il PG si passa adesso: l'invio parte dopo, quando pc è già vuoto
     if (pc) ls.via(K_PIN(pc));
     pc = null; ls.via(K_PG); scheda = null; servizioAvviato = false; nativo('servizio', '', false); chiudiFoglio();
     mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta();
   }
   $('scelta-tavolo').onclick = () => nativo('cambiaLink');
+  // da MASTER TESTER si torna allo stesso tavolo, alla scelta normale dei personaggi
+  function esciDaMaster() {
+    mtUscita = true;   // da qui non lo si riprende più da soli, anche se il tavolo lo elenca ancora
+    if (pc === PG_PROVA) lasciaPG(true);
+    const ancora = 't=' + stanza + '&k=' + chiave + (h.get('b') ? '&b=' + encodeURIComponent(h.get('b')) : '');
+    const qui = location.protocol === 'https:' && /github\.io$/.test(location.hostname) ? location.origin + location.pathname : 'https://legeo996.github.io/Daggerheart-telecomando/';
+    setTimeout(() => { if (APP && nativo('salvaLink', qui + '#' + ancora) !== undefined) return; location.hash = ancora; location.reload(); }, 300);   // il tempo di avvisare il GM
+  }
+  if (MASTER) {   // in MASTER TESTER la scelta mostra solo l'attesa, con l'uscita a portata di mano
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'secondario'; b.id = 'mt-esci'; b.textContent = '🚪 Esci da MASTER TESTER'; b.onclick = esciDaMaster;
+    $('scelte').after(b);
+  }
   function entraInGioco() { mostra('s-gioco'); vaiA(ls.get('dh_tel_pag', 'gioco')); disegna(); mostraCoda(); aggiornaPostaBtn(); statoUI(); disegnaRiflettore(); if (APP) nativo('schermoAcceso', true); }
 
   // ---------- riflettore: chi ha la scena, ✋ Prendi la scena, "Tocca a te!" ----------
@@ -1002,12 +1059,19 @@
   $('menu-btn').onclick = () => {
     let lib = false; try { lib = APP && window.DHApp.batteriaLibera(); } catch (e) {}
     apriFoglio('<h2>☰ Menu</h2>'
-      + '<button type="button" class="voce" id="mn-pg">🔄 Cambia personaggio</button>'
+      + '<button type="button" class="voce" id="mn-pg">' + (PROVA ? '🚪 Esci dalla modalità prova' : MASTER ? '🚪 Esci da MASTER TESTER' : '🔄 Cambia personaggio') + '</button>'
+      + (PROVA ? '<button type="button" class="voce" id="mn-azzera">♻ Rimetti MASTER TESTER com’era all’inizio</button>' : '')
       + (APP ? '<button type="button" class="voce" id="mn-batteria">🔋 Resta collegato in tasca <small>' + (lib ? 'attivo' : 'tocca per permetterlo') + '</small></button>'
         + '<button type="button" class="voce" id="mn-tavolo">📷 Cambia tavolo (nuovo QR)</button>' : '')
       + '<button type="button" class="voce" id="mn-chiudi">Chiudi</button>'
       + '<small style="color:var(--muto);text-align:center">' + (APP ? 'App versione ' + esc(nativo('versione') || '?') + ' · ' : '') + 'telefono ' + esc(DEV.slice(0, 6)) + '</small>');
-    $('mn-pg').onclick = () => { chiudiFoglio(); if (confirm('Lasciare il personaggio e sceglierne un altro?')) lasciaPG(true); };
+    $('mn-pg').onclick = () => {
+      chiudiFoglio();
+      if (PROVA) { ls.via(K_PG); if (APP && nativo('cambiaLink') !== undefined) return; location.hash = ''; location.reload(); return; }   // torna alla schermata del codice del tavolo
+      if (MASTER) { esciDaMaster(); return; }
+      if (confirm('Lasciare il personaggio e sceglierne un altro?')) lasciaPG(true);
+    };
+    if (PROVA) $('mn-azzera').onclick = () => { ls.via('dh_scheda_' + stanza + '_' + pc); location.reload(); };
     $('mn-chiudi').onclick = chiudiFoglio;
     if (APP) { $('mn-batteria').onclick = () => { nativo('batteria'); chiudiFoglio(); }; $('mn-tavolo').onclick = () => { chiudiFoglio(); if (confirm('Collegarti a un altro tavolo?')) nativo('cambiaLink'); }; }
   };
@@ -1085,7 +1149,7 @@
   document.addEventListener('pointerdown', tieniAcceso, { once: true });
 
   aggiornaPostaBtn();
-  if (pc) entraInGioco(); else { mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta(); statoUI(); }
+  if (pc) entraInGioco(); else { mostra('s-scelta'); $('scelta-tavolo').hidden = !APP; disegnaScelta(); statoUI(); masterAuto(); }
   }
 })();
 </script>
