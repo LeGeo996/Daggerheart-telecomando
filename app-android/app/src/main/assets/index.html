@@ -51,7 +51,7 @@
   .avviso { margin: 8px 14px 0; padding: 8px 12px; border-radius: 10px; background: #2c2210; color: #f6d77b; font-size: 13px; display: flex; gap: 8px; align-items: center; flex: none; }
   main { flex: 1; overflow-y: auto; padding: 10px 14px 14px; -webkit-overflow-scrolling: touch; }
   .pagina { display: flex; flex-direction: column; gap: 10px; }
-  nav { display: grid; grid-template-columns: repeat(5, 1fr); background: #140f0b; border-top: 1px solid var(--linea); padding: 4px 4px max(6px, env(safe-area-inset-bottom)); flex: none; }
+  nav { display: grid; grid-template-columns: repeat(6, 1fr); background: #140f0b; border-top: 1px solid var(--linea); padding: 4px 4px max(6px, env(safe-area-inset-bottom)); flex: none; }
   nav button { background: none; border: 0; padding: 6px 2px 4px; color: var(--muto); display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 600; border-radius: 10px; }
   nav button span { font-size: 21px; line-height: 1.1; filter: grayscale(.6); opacity: .8; }
   nav button.attivo { color: var(--testo); background: #201811; } nav button.attivo span { filter: none; opacity: 1; }
@@ -86,6 +86,32 @@
     background: radial-gradient(circle at 35% 30%, #fff8, transparent 40%), radial-gradient(circle, var(--pg), color-mix(in srgb, var(--pg) 45%, #000)); border: 2px solid var(--testo); box-shadow: 0 6px 18px #000, 0 0 22px var(--pg); }
   .medaglione.premuto { border-color: var(--pg); }
   .aiuto { text-align: center; color: var(--muto); font-size: 12px; }
+  /* dadi */
+  .dd-dadi { display: flex; justify-content: center; gap: 14px; padding: 6px 0 2px; }
+  .dado { width: 64px; height: 64px; display: grid; place-items: center; font: 700 28px Cinzel, Georgia, serif; border-radius: 12px; border: 2px solid; position: relative; background: #1b150f; }
+  .dd-dadi figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; } .dd-dadi figcaption { font: 600 10px Inter, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--muto); }
+  #dd-tira { width: 100%; margin-top: 2px; }
+  .dado.speranza { border-color: var(--speranza); color: var(--speranza); box-shadow: inset 0 0 14px rgba(243, 198, 78, .22); clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%); border-radius: 0; background: linear-gradient(180deg, #3a2c0e, #1b150f); }
+  .dado.paura { border-color: #a78bfa; color: #c4b5fd; box-shadow: inset 0 0 14px rgba(167, 139, 250, .25); clip-path: polygon(50% 0, 100% 38%, 82% 100%, 18% 100%, 0 38%); border-radius: 0; background: linear-gradient(180deg, #2a1d48, #160f22); }
+  .dado.d6 { width: 46px; height: 46px; font-size: 20px; border-color: var(--linea); color: var(--testo); align-self: center; }
+  .dado.gira { animation: dado-gira .45s ease-out; } @keyframes dado-gira { 0% { transform: rotate(-30deg) scale(.7); } 60% { transform: rotate(12deg) scale(1.08); } 100% { transform: none; } }
+  .dd-esito { text-align: center; font: 700 17px Cinzel, Georgia, serif; min-height: 26px; margin-top: 8px; color: var(--muto); }
+  .dd-esito.speranza { color: var(--speranza); } .dd-esito.paura { color: #c4b5fd; } .dd-esito.critico { color: #6ee7b7; text-shadow: 0 0 12px rgba(110, 231, 183, .6); }
+  .dd-esito small { display: block; font: 500 12px Inter, sans-serif; color: var(--muto); margin-top: 2px; }
+  .dd-riga { display: flex; align-items: center; gap: 10px; margin-top: 10px; } .dd-riga > span { flex: 1; color: var(--muto); font-size: 13px; font-weight: 600; }
+  .dd-riga .passo { display: flex; align-items: center; gap: 6px; } .dd-riga .passo button { width: 40px; height: 38px; border-radius: 9px; border: 1px solid var(--linea); background: var(--carta2); font-size: 18px; font-weight: 700; }
+  .dd-riga .passo strong { min-width: 38px; text-align: center; font-size: 18px; }
+  .segmenti { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 10px 0; background: #0d0a08; padding: 3px; border-radius: 10px; border: 1px solid var(--linea); }
+  .segmenti button { min-height: 36px; border: 0; border-radius: 8px; background: none; color: var(--muto); font-weight: 600; font-size: 13px; }
+  .segmenti button.attivo { background: var(--carta2); color: var(--testo); box-shadow: inset 0 0 0 1px var(--ottone-scuro); }
+  .dd-tipi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .dd-tipi button { min-height: 48px; border-radius: 10px; border: 1px solid var(--linea); background: var(--carta2); color: var(--testo); font: 700 16px Cinzel, Georgia, serif; }
+  .dd-tipi button:active { background: #2a2016; }
+  .dd-ris { margin-top: 10px; min-height: 22px; text-align: center; font-size: 14px; color: var(--muto); } .dd-ris b { font: 700 24px Cinzel, Georgia, serif; color: var(--testo); margin-left: 6px; }
+  .dd-storia { display: flex; flex-direction: column; gap: 6px; } .dd-storia .vuoto { color: var(--muto); font-size: 13px; text-align: center; }
+  .dd-voce { display: flex; align-items: center; gap: 8px; font-size: 13px; padding-left: 8px; border-left: 3px solid var(--c, var(--ottone)); }
+  .dd-voce b { font: 700 16px Cinzel, Georgia, serif; } .dd-voce .chi { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .dd-voce time { color: var(--muto); font-size: 11px; }
+  .dd-voce .speranza { color: var(--speranza); } .dd-voce .paura { color: #c4b5fd; } .dd-voce .critico { color: #6ee7b7; }
   /* scheda */
   .valori { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .valore { background: var(--carta2); border-radius: 10px; padding: 9px 10px; display: flex; flex-direction: column; gap: 4px; }
@@ -239,6 +265,25 @@
         <div class="pomello" id="pomello"></div></div></div>
       <div class="aiuto" id="aiuto">Trascina il medaglione: avanti è lontano dalla telecamera del tavolo.</div>
     </div>
+    <div class="pagina" id="pag-dadi" hidden>
+      <div class="titoletto">Tiro di Dualità</div>
+      <div class="riquadro">
+        <div class="dd-dadi"><figure><div class="dado speranza" id="dd-sp">–</div><figcaption>Speranza</figcaption></figure><div class="dado d6" id="dd-van" hidden>–</div><figure><div class="dado paura" id="dd-pa">–</div><figcaption>Paura</figcaption></figure></div>
+        <div class="dd-esito" id="dd-esito">Due d12: il più alto dice se tiri con Speranza o con Paura</div>
+        <div class="dd-riga"><span>Modificatore (tratto, esperienza…)</span><div class="passo"><button type="button" id="dd-meno" aria-label="Modificatore meno uno">−</button><strong id="dd-mod">+0</strong><button type="button" id="dd-piu" aria-label="Modificatore più uno">+</button></div></div>
+        <div class="segmenti" id="dd-van-sel"><button type="button" data-v="-1">Svantaggio</button><button type="button" data-v="0">Normale</button><button type="button" data-v="1">Vantaggio</button></div>
+        <button type="button" class="grande" id="dd-tira">🎲 Tira la Dualità</button>
+      </div>
+      <div class="titoletto">Altri dadi <span class="poi" id="dd-n-t"></span></div>
+      <div class="riquadro">
+        <div class="dd-tipi" id="dd-tipi"></div>
+        <div class="dd-riga"><span>Quanti dadi</span><div class="passo"><button type="button" id="dd-n-meno" aria-label="Un dado in meno">−</button><strong id="dd-n">1</strong><button type="button" id="dd-n-piu" aria-label="Un dado in più">+</button></div></div>
+        <div class="dd-riga"><span>Modificatore</span><div class="passo"><button type="button" id="dd-m2-meno" aria-label="Modificatore meno uno">−</button><strong id="dd-m2">+0</strong><button type="button" id="dd-m2-piu" aria-label="Modificatore più uno">+</button></div></div>
+        <div class="dd-ris" id="dd-ris">Tocca un dado per tirarlo</div>
+      </div>
+      <div class="titoletto">Tiri al tavolo</div>
+      <div class="riquadro dd-storia" id="dd-storia"></div>
+    </div>
     <div class="pagina" id="pag-scheda" hidden></div>
     <div class="pagina" id="pag-carte" hidden></div>
     <div class="pagina" id="pag-zaino" hidden></div>
@@ -250,6 +295,7 @@
   </main>
   <nav id="schede">
     <button type="button" data-pag="gioco" class="attivo"><span>🕹️</span>Gioco</button>
+    <button type="button" data-pag="dadi"><span>🎲</span>Dadi</button>
     <button type="button" data-pag="scheda"><span>📜</span>Scheda</button>
     <button type="button" data-pag="carte"><span>🃏</span>Carte</button>
     <button type="button" data-pag="zaino"><span>🎒</span>Zaino</button>
@@ -774,7 +820,7 @@
       if (gmOnline && !prima) presentati().then(() => svuotaCoda());   // il GM è appena arrivato: prima il PG, poi le modifiche salvate
       return;
     }
-    if (topic === base + '/tavolo') { tavolo = d; ls.set(K_TAV, d); disegnaScelta(); controllaProprieta(); disegnaRiflettore(); masterAuto(); return; }
+    if (topic === base + '/tavolo') { tavolo = d; ls.set(K_TAV, d); disegnaScelta(); controllaProprieta(); disegnaRiflettore(); disegnaStoriaDadi(); masterAuto(); return; }
     if (topic === base + '/mappa') { mappa = d; disegnaMappa(); return; }
     if (pc && topic === base + '/pg/' + pc + '/stato') {
       scheda = d; coda.filter(v => v.pc === pc).forEach(v => applicaLocale(v.c));   // le modifiche in coda restano visibili
@@ -895,15 +941,75 @@
     riflPrima = R.su;
   }
 
+  // ---------- 🎲 Dadi: Dualità e dadi liberi ----------
+  // I dadi li tira il telefono (generatore casuale del sistema). Il tiro va al GM, che ricontrolla i valori e applica la
+  // regola (con Speranza +1 Speranza; con Paura +1 Paura al GM e la scena passa a lui). Senza GM il tiro resta qui.
+  const caso = f => { const lim = Math.floor(4294967296 / f) * f, a = new Uint32Array(1); for (;;) { crypto.getRandomValues(a); if (a[0] < lim) return 1 + a[0] % f; } };
+  const segno = n => (n >= 0 ? '+' : '−') + Math.abs(n);
+  const DD = Object.assign({ mod: 0, van: 0, f: 20, n: 1, m2: 0 }, ls.get('dh_tel_dadi', {}));
+  const ddSalva = () => ls.set('dh_tel_dadi', { mod: DD.mod, van: DD.van, f: DD.f, n: DD.n, m2: DD.m2 });
+  let ddLocali = [];   // tiri fatti senza GM (non arrivati al tavolo)
+  function disegnaDadi() {
+    $('dd-mod').textContent = segno(DD.mod); $('dd-m2').textContent = segno(DD.m2); $('dd-n').textContent = DD.n;
+    document.querySelectorAll('#dd-van-sel button').forEach(b => b.classList.toggle('attivo', +b.dataset.v === DD.van));
+    const tipi = $('dd-tipi'); if (!tipi.firstChild) tipi.innerHTML = [4, 6, 8, 10, 12, 20, 100].map(f => '<button type="button" data-f="' + f + '">d' + f + '</button>').join('') + '<button type="button" data-f="0" aria-label="Rilancia l’ultimo">↻</button>';
+    $('dd-n-t').textContent = alTavolo() ? 'il GM vede i tuoi tiri' : (PROVA ? 'prova: i tiri restano qui' : 'GM non collegato: i tiri restano qui');
+    disegnaStoriaDadi();
+  }
+  function disegnaStoriaDadi() {
+    const el = $('dd-storia'); if (!el) return;
+    const T = ((tavolo && Array.isArray(tavolo.tiri)) ? tavolo.tiri : []).concat(ddLocali).sort((a, b) => b.ts - a.ts).slice(0, 8);
+    const pgDi = id => ((tavolo && tavolo.pg) || []).find(x => x.id === id) || {};
+    const fa = ts => { const s = Math.max(0, Math.round((Date.now() - ts) / 1000)); return s < 60 ? 'adesso' : s < 3600 ? Math.floor(s / 60) + ' min fa' : Math.floor(s / 3600) + ' h fa'; };
+    const ES = { speranza: 'con Speranza', paura: 'con Paura', critico: 'critico!' };
+    el.innerHTML = T.length ? T.map(t => { const p = pgDi(t.pc); return '<div class="dd-voce" style="--c:' + esc(p.colore || '#d4af37') + '"><span class="chi">' + esc(p.nome || '—') + (t.locale ? ' <small>(solo qui)</small>' : '') + '</span><b>' + esc(t.tot) + '</b><span class="' + esc(t.esito || '') + '">' + esc(t.k === 'dualita' ? ES[t.esito] || '' : t.d) + '</span><time>' + fa(t.ts) + '</time></div>'; }).join('')
+      : '<div class="vuoto">Ancora nessun tiro</div>';
+  }
+  const giraDado = (el, val) => { el.classList.remove('gira'); void el.offsetWidth; el.classList.add('gira'); el.firstChild.nodeValue = val; };
+  async function mandaTiro(c, t) {
+    if (!PROVA && alTavolo() && await invia(c) === true) return true;
+    ddLocali.push(Object.assign({ pc, ts: Date.now(), locale: true }, t)); ddLocali = ddLocali.slice(-8); disegnaStoriaDadi();
+    return false;
+  }
+  $('dd-meno').onclick = () => { DD.mod = Math.max(-10, DD.mod - 1); ddSalva(); disegnaDadi(); };
+  $('dd-piu').onclick = () => { DD.mod = Math.min(15, DD.mod + 1); ddSalva(); disegnaDadi(); };
+  $('dd-m2-meno').onclick = () => { DD.m2 = Math.max(-20, DD.m2 - 1); ddSalva(); disegnaDadi(); };
+  $('dd-m2-piu').onclick = () => { DD.m2 = Math.min(20, DD.m2 + 1); ddSalva(); disegnaDadi(); };
+  $('dd-n-meno').onclick = () => { DD.n = Math.max(1, DD.n - 1); ddSalva(); disegnaDadi(); };
+  $('dd-n-piu').onclick = () => { DD.n = Math.min(10, DD.n + 1); ddSalva(); disegnaDadi(); };
+  document.querySelectorAll('#dd-van-sel button').forEach(b => { b.onclick = () => { DD.van = +b.dataset.v; ddSalva(); disegnaDadi(); }; });
+  $('dd-tira').onclick = async () => {
+    const sp = caso(12), pa = caso(12), d6 = DD.van ? caso(6) : 0, van = DD.van * d6, tot = sp + pa + van + DD.mod;
+    const esito = sp === pa ? 'critico' : sp > pa ? 'speranza' : 'paura';
+    giraDado($('dd-sp'), sp); giraDado($('dd-pa'), pa);
+    const v = $('dd-van'); v.hidden = !DD.van; if (DD.van) { v.textContent = (DD.van > 0 ? '+' : '−') + d6; v.classList.remove('gira'); void v.offsetWidth; v.classList.add('gira'); }
+    const e = $('dd-esito'); e.className = 'dd-esito ' + esito;
+    e.innerHTML = esc(tot) + ' ' + ({ speranza: 'con Speranza', paura: 'con Paura', critico: 'CRITICO!' })[esito]
+      + '<small>' + sp + ' + ' + pa + (DD.van ? (DD.van > 0 ? ' + ' : ' − ') + d6 + (DD.van > 0 ? ' (vantaggio)' : ' (svantaggio)') : '') + (DD.mod ? ' ' + (DD.mod > 0 ? '+ ' : '− ') + Math.abs(DD.mod) : '') + (esito === 'critico' ? ' · successo critico' : '') + '</small>';
+    vibra(esito === 'critico' ? [40, 50, 40, 50, 120] : 25);
+    const arrivato = await mandaTiro({ tipo: 'tiro', k: 'dualita', sp, pa, van, mod: DD.mod }, { k: 'dualita', tot, esito });
+    if (!arrivato && !PROVA) avvisa('Il GM non è collegato: il tiro resta solo sul telefono');
+  };
+  $('dd-tipi').onclick = async ev => {
+    const b = ev.target.closest('button[data-f]'); if (!b) return;
+    if (+b.dataset.f) { DD.f = +b.dataset.f; ddSalva(); }
+    const r = []; for (let i = 0; i < DD.n; i++) r.push(caso(DD.f));
+    const tot = r.reduce((a, x) => a + x, 0) + DD.m2;
+    $('dd-ris').innerHTML = esc(DD.n + 'd' + DD.f + (DD.m2 ? segno(DD.m2) : '')) + ': ' + esc(r.join(' + ') + (DD.m2 ? ' ' + (DD.m2 > 0 ? '+ ' : '− ') + Math.abs(DD.m2) : '')) + ' =<b>' + tot + '</b>';
+    vibra(15);
+    await mandaTiro({ tipo: 'tiro', k: 'dadi', f: DD.f, r, mod: DD.m2 }, { k: 'dadi', tot, d: DD.n + 'd' + DD.f });
+  };
+
   // ---------- schede in basso ----------
   function vaiA(pag) {
-    if (!['gioco', 'scheda', 'carte', 'zaino', 'mappa'].includes(pag)) pag = 'gioco';
+    if (!['gioco', 'dadi', 'scheda', 'carte', 'zaino', 'mappa'].includes(pag)) pag = 'gioco';
     ls.set('dh_tel_pag', pag);
     document.querySelectorAll('#schede button').forEach(b => b.classList.toggle('attivo', b.dataset.pag === pag));
     document.querySelectorAll('main .pagina').forEach(p => { p.hidden = p.id !== 'pag-' + pag; });
     if (pag !== 'gioco') lasciaJoy();
     $('contenuto').scrollTop = 0;
     if (pag === 'mappa') disegnaMappa();
+    if (pag === 'dadi') disegnaDadi();
   }
   document.querySelectorAll('#schede button').forEach(b => b.onclick = () => vaiA(b.dataset.pag));
 

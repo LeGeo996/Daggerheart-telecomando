@@ -231,6 +231,9 @@ public class MainActivity extends Activity {
     }
 
     private void apriEsterno(String url) {
+        // solo pagine web: un link scritto in un messaggio non deve poter aprire altre app (intent:, file:, tel:…)
+        String u = url == null ? "" : url.trim().toLowerCase(java.util.Locale.ROOT);
+        if (!u.startsWith("https://") && !u.startsWith("http://")) { Toast.makeText(this, "Link non aperto: solo indirizzi web", Toast.LENGTH_SHORT).show(); return; }
         try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))); } catch (Exception e) { Toast.makeText(this, "Nessuna app per aprire il link", Toast.LENGTH_SHORT).show(); }
     }
 
